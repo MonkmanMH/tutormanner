@@ -1,0 +1,156 @@
+---
+title: "BIDA302 hexsticker"
+output:
+  html_document:
+    df_print: paged
+---
+
+
+```{r setup}
+
+# 
+
+library(hexSticker)
+library(tidyverse)
+
+```
+
+https://github.com/GuangchuangYu/hexSticker 
+
+
+
+## fonts & colours
+
+```{r}
+
+library(showtext)
+## Loading Google fonts (http://www.google.com/fonts)
+#font_add_google("Poiret One", "poiret")
+font_add_google("Eagle Lake", "eagle")
+font_add_google("Raleway", "raleway")
+
+## loading local font 
+#font_add(family = "broadway", regular = "BROADW.TTF")
+
+#font_add("gill",
+#         regular="C:\\Windows\\Fonts\\GILSANUB.TTF")
+
+font_add("trebuchet",
+         regular="C:\\Windows\\Fonts\\trebuc.ttf")
+
+
+
+
+## Automatically use showtext to render text for future devices
+showtext_auto()
+
+
+```
+
+
+### colours
+
+
+```{r}
+
+blue <- "#34558b"    #Pantone 19-4052 Classic Blue RGB: 51, 85, 139
+burgundy <- "#64313e"    #Pantone 19-1617 RGB: 100, 49, 62  
+yellow <- "#ffaf12"    #Pantone 14-1064 Saffron RGB: 254, 175, 18
+
+```
+
+
+### icon
+
+```{r}
+
+icon <- "noun_Tudor house_1153277.png"
+
+```
+
+
+## trials
+
+looks good in the Rmd window but ggsaves a bit off
+
+```{r}
+
+tutormanner_hex <- 
+  sticker(icon, package="tutormanner", 
+          s_x=1, s_y=.75, s_width=.7, s_height=.7,
+          h_fill=yellow, h_color=burgundy, h_size = 1.5,
+          p_size=12, p_color = burgundy,
+          p_family = "eagle")
+
+tutormanner_hex
+
+#ggplot2::ggsave("tutormanner_hex.png", width = 2, height = 2)
+
+
+```
+
+
+
+Fixed for print (is this a function of the `width` and `height` arguments?)
+
+```{r}
+
+tutormanner_hex <- 
+  sticker(icon, package="tutormanner", 
+          s_x=1, s_y=.75, s_width=.65, s_height=.65,
+          h_fill=yellow, h_color=burgundy, h_size = 1.5,
+          p_size=16, p_color = burgundy,
+          p_family = "eagle")
+
+tutormanner_hex
+
+ggplot2::ggsave("tutormanner1_hex.png", width = 2, height = 2)
+
+
+```
+
+
+what about a Burgundian Tudor manor?
+
+
+```{r}
+
+icon2 <- "noun_Tudor house_1153277_burgundy.png"
+
+tutormanner_hex <- 
+  sticker(icon2, package="tutormanner", 
+          s_x=1, s_y=.75, s_width=.65, s_height=.65,
+          h_fill=yellow, h_color=burgundy, h_size = 1.5,
+          p_size=16, p_color = burgundy,
+          p_family = "eagle")
+
+tutormanner_hex
+
+ggplot2::ggsave("tutormanner2_hex.png", width = 2, height = 2)
+
+
+```
+
+
+
+```{r}
+
+tutormanner_hex <- 
+  sticker(icon2, package="tutormanner", 
+          s_x = 1, s_y = 1.3, 
+          s_width = 0.65, s_height = 0.65,
+          h_fill = yellow, h_color = burgundy, h_size = 1.5,
+          p_size=16, p_color = burgundy,
+          p_x = 1, p_y = 0.65,
+          p_family = "eagle")
+
+tutormanner_hex
+
+ggplot2::ggsave("tutormanner_hex.png", width = 2, height = 2)
+
+
+
+```
+
+
+
