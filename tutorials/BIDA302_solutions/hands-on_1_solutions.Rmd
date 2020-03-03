@@ -7,7 +7,11 @@ runtime: shiny_prerendered
 
 
 
-<!-- This file by Charlotte Wickham (with modifications by Martin Monkman) is licensed under a Creative Commons Attribution 4.0 International License, adapted from the orignal work at https://github.com/rstudio/master-the-tidyverse by RStudio and https://github.com/cwickham/data-science-in-tidyverse-solutions. -->
+<!-- This file by Charlotte Wickham (with modifications by Martin Monkman) is licensed under a Creative Commons Attribution 4.0 International License, adapted from the orignal work at https://github.com/rstudio/master-the-tidyverse by RStudio and https://github.com/cwickham/data-science-in-tidyverse-solutions. 
+
+The tables of functions and operators are from Gina Reynolds, [Tidyverse in Action](https://github.com/EvaMaeRey/tidyverse_in_action)
+
+-->
 
 
 ```{r setup, include=FALSE}
@@ -22,16 +26,72 @@ library(gapminder)
 
 ## Transform Data 1: manipulate cases
 
+For this section, we will be using some of the functions from the tidyverse package {dplyr}. The functions are verbs that describe what they do. Here's a list of the {dplyr} functions that you'll be using:
 
-### gapminder
 
-Take a quick look at the data in the {gapminder} package.
+|function |action |
+| :--- | :--- |
+| `filter()`    | *keep rows*|
+| `mutate()`    | *create a new variable*|
+| `group_by()`  | *declare subsets in data*|
+| `select()`    | *keep variables (or drop them -var)*|
+| `summarize()` | *summarize the data, by groups if they have been declared*|
+| `rename()`    | *renaming variables*|
+| `tally()`     | *counting (by groups if group_by() applied)*|
+| `distinct()`  | *returns only rows that are unique*| 
+| `case_when()` | *is used for "recoding" variable, often used with mutate()*|
+
+
+### other operators
+
+**Arithmetic operators**
+
+| Operator | Description |
+| :--- | :--- |
+| + | *plus* |
+| - | *minus* |
+| \* | *multiplication*  |
+| / | *division* |
+| ^ | *exponential* |
+
+<P>
+
+**Boolean operators** are a special type of operator that return TRUE or FALSE.  
+
+| Operator | Description |
+| :--- | :--- |
+| ==    | *equal, tests equality* |
+| !=    | *not equal, tests inequality* |
+| \>    | *greater than, tests greater than* (also >=) |
+| <     | *less than, tests less than* (also <=) |
+| %in%  | *contains, tests inclusion* |
+
+<P>
+
+Boolean operators can be combined with *and* or *or*.  
+
+| Operator | Description |
+| :--- | :--- |
+| `&`     | *and, returns true if preceeding and following are both true, else false* |
+| &#124;  | *or, returns true if either preceeding and following are true, else false* |
+
+
+* see [_R for Data Science_, "Comparisions""](https://r4ds.had.co.nz/transform.html#comparisons) and ["Logical Operators"](https://r4ds.had.co.nz/transform.html#logical-operators).]
+
+
+
+
+## gapminder data
+
+We will be using the data in the {gapminder} package. Take a quick look at the data:
 
 
 ```{r gapminder_data_view, exercise=TRUE}
+
 gapminder
 
 ```
+
 
 
 ## Your Turn 1.1: filter() rows
@@ -91,11 +151,14 @@ Use Boolean operators to alter the code below to return only the rows that conta
 
 * United States before 1970
 
-```{r}
+```{r filter4_example, exercise=TRUE, exercise.eval=FALSE}
 # example 
 gapminder %>%                                       # Note use of `%>%` pipe symbol
   filter(country == "New Zealand", year > 2000)
 
+```
+
+```{r filter4_example-solution}
 # answer
 gapminder %>%
   filter(country == "United States", year < 1970)
@@ -108,7 +171,12 @@ gapminder %>%
 
 *  Countries where life expectancy in 2007 is below 50 or over 75
 
-```{r}
+```{r filter5_example, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+
+```{r filter5_example-solution}
 # answer
 gapminder %>%
   filter(year == 2007, lifeExp < 50 | lifeExp > 75) # Note that you have to state `lifeExp` twice, as
@@ -125,13 +193,19 @@ gapminder %>%
 * Create a list object and return records for any of "New Zealand", "Canada" or "United States"
 
 
-```{r}
+```{r filter6_example, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+
+```{r filter6_example-solution}
 # answer
 gapminder %>%
   filter(country %in% c("New Zealand", "Canada", "United States"))
   
 # alternate answer
 country_list <- c("New Zealand", "Canada", "United States")   # create object that is list of countries
+
 gapminder %>%
   filter(country %in% country_list)                           # filter uses that object 
   
@@ -140,8 +214,12 @@ gapminder %>%
 
 * Return records for all continents except Europe
 
+```{r filter7_example, exercise=TRUE, exercise.eval=FALSE}
 
-```{r}
+```
+
+
+```{r filter7_example-solution}
 # answer
 gapminder %>%
   filter(continent != "Europe")
@@ -156,16 +234,32 @@ gapminder %>%
 
 ## Your Turn 1.3: sorting with `arrange()`
 
-Find the records with the smallest population.
-```{r}
+Sort the records so that the country / year combinatino with the smallest population are first.
+
+```{r arrange1_example, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+
+```{r arrange1_example-solution}
+
 #answer
 gapminder %>%
   arrange(pop)
 
 ```
 
-Find the records with the largest GDP per capita.
-```{r}
+Sort the records so that the largest GDP per capita is shown first.
+
+
+
+```{r arrange2_example, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+
+```{r arrange2_example-solution}
+
 #answer
 gapminder %>% arrange(desc(gdpPercap))
 
@@ -181,9 +275,16 @@ gapminder %>% arrange(-gdpPercap)
 
 ## Your Turn 1.4: creating new variables
 
-Calculate a new variable with total GDP
+Use the `mutate()` function to calculate a new variable with total GDP.
 
-```{r, error = TRUE}
+
+```{r mutate1_example, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+
+```{r mutate1_example-solution}
+
 # answer
 gapminder %>%
   mutate(totalGDP = pop * gdpPercap)
@@ -191,9 +292,19 @@ gapminder %>%
 
 ```
 
-Create a summary table with the population and GDP by continent for the year 1952  
 
-```{r}
+## EXERCISE: {dplyr} functions
+
+Use the {dplyr} functions to create a summary table with the population and GDP by continent for the year 1952  
+
+
+```{r dplyr1_exercise, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+
+```{r dplyr1_exercise-solution}
+
 # answer
 gapminder %>%
   filter(year == 1952) %>%               # filter to get the records we need
@@ -210,11 +321,18 @@ gapminder %>%
 
 Alter the code to add a `prev_lifeExp` column that contains the life expectancy from the previous record.
 
-(Hint: use "Transformation" cheatsheet, you want to offset elements by one)
+(Hint: refer to the ["Data Transformation"](https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf) cheatsheet; you want to offset elements by one)
 
 Extra challenge: Why isn't this quite the 'life expectency five years ago'?
 
-```{r}
+
+```{r dplyr2_exercise, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+
+```{r dplyr2_exercise-solution}
+
 # answer
 gapminder %>%
   mutate(prev_lifeExp = lag(lifeExp))
@@ -234,22 +352,16 @@ gapminder %>%
 
 ***
 
-# Transform Data 2: summarize
+## Transform Data 2: summarize
 
 <!-- This file by Charlotte Wickham (with some modifications by Martin Monkman) is licensed under a Creative Commons Attribution 4.0 International License, adapted from the orignal work at https://github.com/rstudio/master-the-tidyverse by RStudio. -->
 
 
-```{r}
-library(tidyverse)
-library(gapminder)
-
-```
-
-## gapminder
+**gapminder**
 
 Take a quick look at the data in the {gapminder} package.
 
-```{r}
+```{r yourturn2_0, exercise=TRUE, exercise.eval=FALSE}
 gapminder
 ```
 
@@ -263,7 +375,12 @@ Use summarise() to compute three statistics about the data:
 * The last (maximum) year in the dataset
 * The number of unique countries
 
-```{r}
+```{r yourturn2_1, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+
+```{r yourturn2_1-solution}
 # answer
 gapminder %>%
   summarize(year_min = min(year),
@@ -281,7 +398,12 @@ Then find:
 1. The number of unique countries
 2. The median life expectancy of African countries as a group
 
-```{r}
+```{r yourturn2_2, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+
+```{r yourturn2_2-solution}
 # answer
 gapminder %>% 
   filter(continent == "Africa", year == 2007) %>% 
@@ -296,7 +418,12 @@ gapminder %>%
 
 Find the median life expectancy by continent in 2007.
 
-```{r}
+```{r yourturn2_3, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+
+```{r yourturn2_3-solution}
 gapminder %>%
   filter(year == 2007) %>%
   group_by(continent) %>% 
@@ -309,22 +436,31 @@ gapminder %>%
 
 Find the median life expectancy by continent for each year in the dataframe.
 
-```{r}
+```{r yourturn2_4, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+
+```{r yourturn2_4-solution}
 
 gapminder %>%
   group_by(continent, year) %>%
   summarize(median_lifeExp = median(lifeExp))
 
 ```
+
+
 ## Your Turn 2.5
 
-Brainstorm with your neighbor the sequence of operations to find:  the country with biggest jump in life expectancy  (between any two consecutive records) for each continent.
-
-## Your Turn 2.6
 
 Find the country with biggest jump in life expectancy (between any two consecutive records) for each continent.
 
-```{r}
+```{r yourturn2_5, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+
+```{r yourturn2_5-solution}
 # One of many solutions
 gapminder %>%
   group_by(country) %>%
@@ -345,17 +481,9 @@ gapminder %>%
 
 
 
-# Transform Data 3: pivot
+## Transform Data 3: pivot
 
 <!-- This file by Martin Monkman is licensed under a Creative Commons Attribution 4.0 International License -->
-
-
-```{r}
-library(tidyverse)
-# data packages
-library(gapminder)
-
-```
 
 
 ## Your Turn 3.1
@@ -364,13 +492,15 @@ A pivot table crosstab using the {mpg} data package of automobile fuel economy.
 
 First, a look at the source table.
 
-```{r}
+```{r yourturn3_0, exercise=TRUE, exercise.eval=FALSE}
+
 mpg
 ```
 
 Using `group_by` and `summarise` to create a summary table of the average engine displacement by vehicle class:
 
-```{r}
+```{r yourturn3_1_1, exercise=TRUE, exercise.eval=FALSE}
+
 mpg %>%                                
   group_by(class) %>%                   
   summarise(displ_mean = mean(displ)) 
@@ -378,8 +508,12 @@ mpg %>%
 ```
 
 Now do the same with vehicle class and number of cylinders:
+```{r yourturn3_1_2, exercise=TRUE, exercise.eval=FALSE}
 
-```{r}
+```
+
+
+```{r yourturn3_1_2-solution}
 # answer
 class_by_cyl <- mpg %>%                 # note that an object `class_by_cyl` is created
   group_by(class, cyl) %>%
@@ -387,17 +521,46 @@ class_by_cyl <- mpg %>%                 # note that an object `class_by_cyl` is 
 
 class_by_cyl                            # in order to print the object, just name it
 
+
 ```
 
 
 What happens if you reverse the order of the grouping variables?
 
+```{r yourturn3_1_3, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+
+```{r yourturn3_1_3-solution}
+# answer
+class_by_cyl <- mpg %>%                 # note that an object `class_by_cyl` is created
+  group_by(cyl, class) %>%
+  summarise(displ_mean = mean(displ)) 
+
+class_by_cyl                            # in order to print the object, just name it
+
+```
 
 
 Create a pivot (crosstab) table with class by number of cylinders:
 
+```{r, include=FALSE}
+#load class_by_cyl table (since the output of one chunk doesn't carry forward)
 
-```{r}
+#saveRDS(class_by_cyl, file = "tutorials/BIDA302_solutions/data/class_by_cyl.rds")
+class_by_cyl <- readRDS(file = "data/class_by_cyl.rds")
+
+
+```
+
+
+```{r yourturn3_1_4, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+
+```{r yourturn3_1_4-solution}
 # answer
 # pivot table (wide)
 
@@ -411,7 +574,24 @@ class_by_cyl_pivot
 
 Now, unpivot it back to the original structure:
 
-```{r}
+```{r, include=FALSE}
+#saveRDS(class_by_cyl_pivot, file = "tutorials/BIDA302_solutions/data/class_by_cyl_pivot.rds")
+
+
+#load class_by_cyl_pivot table (since the output of one chunk doesn't carry forward)
+
+class_by_cyl_pivot <- readRDS(file = "data/class_by_cyl_pivot.rds")
+
+
+```
+
+
+```{r yourturn3_1_5, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+
+```{r yourturn3_1_5-solution}
 # and back to longer...
 
 displ_class_by_cyl <- class_by_cyl_pivot %>%
@@ -421,7 +601,21 @@ displ_class_by_cyl
 
 ```
 
-What do you notice about the structure of the unpivoted table?
+
+
+
+```{r quiz}
+quiz(
+  question("What do you notice about the structure of the unpivoted table?",
+    answer("It's exactly the same as it was before"),
+    answer("The variables (columns) are in different order"),
+    answer("There are now `NA` values", correct = TRUE),
+    answer("The values in the cells have changed")
+  )
+)
+```
+
+
 
 
 
@@ -476,7 +670,7 @@ gapminder %>%
 
 ***
 
-# Transform data 4: select()
+## Transform data 4: select()
 
 <!-- This file by Martin Monkman is licensed under a Creative Commons Attribution 4.0 International License -->
 
