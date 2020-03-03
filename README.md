@@ -1,7 +1,7 @@
 tutormanner <img src="hex_sticker/tutormanner_hex.png" align="right" width="300"/>
 ==========================================================
 
-A place to house tutorials for learning R, with an emphasis on practical [tidyverse](https://www.tidyverse.org/) examples
+Housing tutorials for learning R, with an emphasis on practical [tidyverse](https://www.tidyverse.org/) examples
 
 
 ***
