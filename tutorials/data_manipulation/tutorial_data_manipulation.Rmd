@@ -30,68 +30,6 @@ interviews <- read_csv("data/SAFI_clean.csv", na = "NULL")
 -->
 
 
-## Topic 1
-
-### Exercise 
-
-*Here's a simple exercise with an empty code chunk provided for entering the answer.*
-
-Write the R code required to add two plus two:
-
-```{r two-plus-two, exercise=TRUE}
-
-```
-
-### Exercise with Code
-
-*Here's an exercise with some prepopulated code as well as `exercise.lines = 5` to provide a bit more initial room to work.*
-
-Now write a function that adds any two numbers and then call it:
-
-```{r add-function, exercise=TRUE, exercise.lines = 5}
-add <- function() {
-  
-}
-```
-
-## Topic 2
-
-### Exercise with Hint
-
-*Here's an exercise where the chunk is pre-evaulated via the `exercise.eval` option (so the user can see the default output we'd like them to customize). We also add a "hint" to the correct solution via the chunk immediate below labeled `print-limit-hint`.*
-
-Modify the following code to limit the number of rows printed to 5:
-
-```{r print-limit, exercise=TRUE, exercise.eval=TRUE}
-mtcars
-```
-
-```{r print-limit-hint}
-head(mtcars)
-```
-
-### Quiz
-
-*You can include any number of single or multiple choice questions as a quiz. Use the `question` function to define a question and the `quiz` function for grouping multiple questions together.*
-
-Some questions to verify that you understand the purposes of various base and recommended R packages:
-
-```{r quiz}
-quiz(
-  question("Which package contains functions for installing other R packages?",
-    answer("base"),
-    answer("tools"),
-    answer("utils", correct = TRUE),
-    answer("codetools")
-  ),
-  question("Which of the R packages listed below are used to create plots?",
-    answer("lattice", correct = TRUE),
-    answer("tools"),
-    answer("stats"),
-    answer("grid", correct = TRUE)
-  )
-)
-```
 
 
 ## Data Manipulation using **`dplyr`** and **`tidyr`**
@@ -161,6 +99,11 @@ Take a look at the first 10 rows of the `interviews` data frame, using the `head
 ```
 
 
+```{r SAFI_data_view-hint}
+head(interviews)
+
+```
+
 ## `dplyr` functions
 
 We're going to learn some of the most common **`dplyr`** functions:
@@ -177,7 +120,7 @@ We're going to learn some of the most common **`dplyr`** functions:
 To select columns of a data frame, use `select()`. The first argument to this function is the data
 frame (`interviews`), and the subsequent arguments are the columns to keep.
 
-```{r select_example, exercise=TRUE, exercise.eval=TRUE}
+```{r select_example, exercise=TRUE, exercise.eval=FALSE}
 select(interviews, village, no_membrs, years_liv)
 ```
 
@@ -255,7 +198,7 @@ interviews_god
 
 Note that the final data frame (`interviews_god`) is the leftmost part of this expression.
 
-## Exercise: data manipulation
+## Exercise 1: data manipulation
 
 Using pipes, subset the `interviews` data to include interviews
 where respondents were members of an irrigation association
@@ -265,7 +208,12 @@ where respondents were members of an irrigation association
 
 #### Solution
 
-```{r}
+```{r data_manip_ex1, exercise=TRUE, exercise.eval=TRUE}
+
+```
+
+
+```{r data_manip_ex1-solution}
 interviews %>%
    filter(memb_assoc == "yes") %>%
    select(affect_conflicts, liv_count, no_meals)
@@ -281,7 +229,7 @@ two columns. For this we'll use `mutate()`.
 We might be interested in the ratio of number of household members
 to rooms used for sleeping (i.e. avg number of people per room):
 
-```{r, purl = FALSE}
+```{r, mutate01_example, exercise=TRUE, exercise.eval=FALSE}
 interviews %>%
     mutate(people_per_room = no_membrs / rooms)
 ```
@@ -295,7 +243,7 @@ These cases are recorded as "NULL" in the dataset.
 
 To remove these cases, we could insert a `filter()` in the chain:
 
-```{r, purl = FALSE}
+```{r, mutate02_example, exercise=TRUE, exercise.eval=FALSE}
 interviews %>%
     filter(!is.na(memb_assoc)) %>%
     mutate(people_per_room = no_membrs / rooms)
@@ -304,26 +252,31 @@ interviews %>%
 The `!` symbol negates the result, so we're asking for every row where
 `memb_assoc` *is not* missing..
 
-> ## Exercise
->
->  Create a new data frame from the `interviews` data that meets the following
->  criteria: contains only the `village` column and a new column called
->  `total_meals` containing a value that is equal to the total number of meals
->  served in the household per day on average (`no_membrs` times `no_meals`).
->  Only the rows where `total_meals` is greater than 20 should be shown in the
->  final data frame.
->
->  **Hint**: think about how the commands should be ordered to produce this data
->  frame!
->
-> > ## Solution
-> >
-> > ``` {r}
-> > interviews_total_meals <- interviews %>%
-> >     mutate(total_meals = no_membrs * no_meals) %>%
-> >     filter(total_meals > 20) %>%
-> >     select(village, total_meals)
-> > ```
-> {: .solution}
-{: .challenge}
 
+
+## Exercise 2: mutate
+
+Create a new data frame from the `interviews` data that meets the following
+criteria: contains only the `village` column and a new column called
+`total_meals` containing a value that is equal to the total number of meals
+served in the household per day on average (`no_membrs` times `no_meals`).
+Only the rows where `total_meals` is greater than 20 should be shown in the
+final data frame.
+**Hint**: think about how the commands should be ordered to produce this data
+frame!
+
+
+```{r data_manip_ex2, exercise=TRUE, exercise.eval=TRUE}
+
+```
+
+
+```{r data_manip_ex2-solution}
+interviews_total_meals <- interviews %>%
+   mutate(total_meals = no_membrs * no_meals) %>%
+   filter(total_meals > 20) %>%
+   select(village, total_meals)
+```
+
+
+**THE END (_temporarily_)**
