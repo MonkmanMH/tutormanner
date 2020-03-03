@@ -1,4 +1,4 @@
-tutormanner <img src="hex_sticker/BIDA302_hex.png" align="right" width="300"/>
+tutormanner <img src="hex_sticker/tutormanner_hex.png" align="right" width="300"/>
 ==========================================================
 
 # tutormanner
