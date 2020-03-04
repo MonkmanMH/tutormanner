@@ -26,23 +26,34 @@ library(gapminder)
 
 ## Transform Data 1: manipulate cases
 
-For this section, we will be using some of the functions from the tidyverse package {dplyr}. The functions are verbs that describe what they do. Here's a list of the {dplyr} functions that you'll be using:
+> Please refer to [_R for Data Science_, Data transformation](https://r4ds.had.co.nz/transform.html) for more information about this section.
+
+When working with data, particularly large data sets, you encounter a situation where you need to: 
+
+* subset the data so that it contains only those records you are interested in (Why deal with every province in Canada when you just need the British Columbia data?)
+
+* subset the data so taht it contains only those variables you are interested in (Why keep looking at variables that do not factor into your analysis?)
+
+* create new variables, often through calculations based on variables in your data
+
+
+
+To achieve these three goals, we will be using functions from the tidyverse package {dplyr}. The functions are verbs that describe what they do. Here's a list of the {dplyr} functions that you'll be using:
 
 
 |function |action |
 | :--- | :--- |
 | `filter()`    | *keep rows*|
-| `mutate()`    | *create a new variable*|
-| `group_by()`  | *declare subsets in data*|
 | `select()`    | *keep variables (or drop them -var)*|
-| `summarize()` | *summarize the data, by groups if they have been declared*|
-| `rename()`    | *renaming variables*|
-| `tally()`     | *counting (by groups if group_by() applied)*|
-| `distinct()`  | *returns only rows that are unique*| 
-| `case_when()` | *is used for "recoding" variable, often used with mutate()*|
+| `mutate()`    | *create a new variable*|
+| `arrange()`    | *sort from smallest to largest*|
+| `arrange(desc())`    | *sort from largest to smallest*|
+
 
 
 ### other operators
+
+In addition to these functions, R has a number of operators that add significantly to your code.
 
 **Arithmetic operators**
 
@@ -81,7 +92,7 @@ Boolean operators can be combined with *and* or *or*.
 
 
 
-## gapminder data
+### gapminder data
 
 We will be using the data in the {gapminder} package. Take a quick look at the data:
 
@@ -96,9 +107,16 @@ gapminder
 
 ## Your Turn 1.1: filter() rows
 
+The `filter()` function allows us to specify the observations (records) that we want to keep in our data analysis.
+
+The general structure of a `filter()` function is:
+
+`filter(data, variable <test> "value")`
+
+
 See if you can use the logical operators to manipulate our code below to show:
 
-The data for Canada
+* the data for Canada
 
 ```{r filter1_example, exercise=TRUE, exercise.eval=FALSE}
 # example
@@ -114,7 +132,7 @@ filter(gapminder, country == "Canada")
 
 
 
-All data for countries in Oceania
+* All data for countries in Oceania
 
 ```{r filter2_example, exercise=TRUE, exercise.eval=FALSE}
 # example
@@ -131,7 +149,8 @@ filter(gapminder, continent == "Oceania")
 
 
 
-Rows where the life expectancy is greater than 82
+* Rows where the life expectancy is greater than 82
+
 ```{r filter3_example, exercise=TRUE, exercise.eval=FALSE}
 # example
 filter(gapminder, country == "New Zealand")
@@ -146,6 +165,24 @@ filter(gapminder, lifeExp > 82)
 
 
 ## Your Turn 1.2: multiple criteria
+
+### Introducing the pipe operator ` %>% `
+
+(see [_R for Data Science_, Pipes](https://r4ds.had.co.nz/pipes.html) for a deep dive into pipes)
+
+The pipe operator ` %>% ` allows us to put the data first, and then have other functions work with the outcome of the first line.
+
+For example, we could write
+
+`function(data, arg)` or, with a pipe
+
+`data %>% function(arg)` 
+
+If we want to do anything with the first statement, we have to assign it to an intermediate object, and then use that object in the second statement. With the pipe, we can simply add another pipe and the results of the first function are passed to the second statement.
+
+As we get to more and more complex statements, the power of this will become more evident.
+
+***
 
 Use Boolean operators to alter the code below to return only the rows that contain:
 
@@ -365,6 +402,15 @@ quiz(
 ## Transform Data 2: summarize
 
 <!-- This file by Charlotte Wickham (with some modifications by Martin Monkman) is licensed under a Creative Commons Attribution 4.0 International License, adapted from the orignal work at https://github.com/rstudio/master-the-tidyverse by RStudio. -->
+
+To achieve these three goals, we will be using functions from the tidyverse package {dplyr}. The functions are verbs that describe what they do. Here's a list of the {dplyr} functions that you'll be using:
+
+
+|function |action |
+| :--- | :--- |
+| `group_by()`  | *declare subsets in data*|
+| `summarize()` | *summarize the data, by groups if they have been declared*|
+| `tally()`     | *counting (by groups if group_by() applied)*|
 
 
 **gapminder**
@@ -765,6 +811,25 @@ gapminder %>%
 * Restructure data frames with `select()` 
 * Different ways to define what variables are selected by `select()`
 * Reinforce other data transformation functions
+
+
+Here's a list of the {dplyr} functions that are used in this tutorial, and a few more that are handy from time to time:
+
+
+|function |action |
+| :--- | :--- |
+| `filter()`    | *keep rows*|
+| `select()`    | *keep variables (or drop them -var)*|
+| `mutate()`    | *create a new variable*|
+| `group_by()`  | *declare subsets in data*|
+| `summarize()` | *summarize the data, by groups if they have been declared*|
+| `rename()`    | *renaming variables*|
+| `tally()`     | *counting (by groups if group_by() applied)*|
+| `distinct()`  | *returns only rows that are unique*| 
+| `case_when()` | *is used for "recoding" variable, often used with mutate()*|
+| `arrange()`    | *sort from smallest to largest*|
+| `arrange(desc())`    | *sort from largest to smallest*|
+
 
 
 
