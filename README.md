@@ -5,7 +5,7 @@ Housing tutorials for learning R, with an emphasis on practical [tidyverse](http
 
 ***
 
-## Launched tutorials
+## Online tutorials
 
 The following links are to the shinyapps.io online versions of the tutorials
 
