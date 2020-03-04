@@ -13,7 +13,7 @@ The following links are to the shinyapps.io online versions of the tutorials
 
 The solutions for the in-class hands-on exercises for [BIDA302](https://github.com/MonkmanMH/UVic_BIDA302)
 
-* [lesson 1](https://monkmanmh.shinyapps.io/BIDA302_hands-on_1_solutions/)
+* [lesson 1](https://monkmanmh.shinyapps.io/BIDA302_hands-on_1_solutions/): data manipulation with {dplyr} and {tidyr}
 
 
 ***
