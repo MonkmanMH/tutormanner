@@ -323,8 +323,6 @@ Alter the code to add a `prev_lifeExp` column that contains the life expectancy 
 
 (Hint: refer to the ["Data Transformation"](https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf) cheatsheet; you want to offset elements by one)
 
-Extra challenge: Why isn't this quite the 'life expectency five years ago'?
-
 
 ```{r dplyr2_exercise, exercise=TRUE, exercise.eval=FALSE}
 
@@ -339,7 +337,19 @@ gapminder %>%
 
 # challenge hint: 
 # - note that there is an `NA` in the first row, since there's no prior row to pull from
-# - look at the `prev_lifeExp` when the country changes from Afghanistan to Albania 
+```
+
+
+
+```{r quiz1_5}
+quiz(
+  question("Why isn't this quite the 'life expectency five years ago'?",
+    answer("The `lag()` function doesn't know when the country changes so is pulling the last record for the previous country", correct = TRUE),
+    answer("The `lag() function is only 1 step, not 5, so it's only one year apart"),
+    answer("The data are every 4 years apart"),
+    answer("The question is a trick--the value _is_ 'life expectency five years ago'")
+  )
+)
 ```
 
 
@@ -485,6 +495,16 @@ gapminder %>%
 
 <!-- This file by Martin Monkman is licensed under a Creative Commons Attribution 4.0 International License -->
 
+Pivoting the data in your file can be very helpful in your analysis. It's particularly helpful when your data is not "tidy". For example, there might be 
+
+* One variable spread across multiple columns
+
+* One observation scattered across multiple rows.
+
+You might also want to pivot the data to make it more human readable (a more compact layout that's easily scanned) or machine readable.
+
+See [_R for Data Science_, Tidy data: Pivoting](https://r4ds.had.co.nz/tidy-data.html#pivoting)
+
 
 ## Your Turn 3.1
 
@@ -508,6 +528,7 @@ mpg %>%
 ```
 
 Now do the same with vehicle class and number of cylinders:
+
 ```{r yourturn3_1_2, exercise=TRUE, exercise.eval=FALSE}
 
 ```
@@ -604,7 +625,7 @@ displ_class_by_cyl
 
 
 
-```{r quiz}
+```{r quiz3_1}
 quiz(
   question("What do you notice about the structure of the unpivoted table?",
     answer("It's exactly the same as it was before"),
@@ -631,7 +652,12 @@ Create a table where:
 
 (This is a restructuring of the table from 2.4)
 
-```{r}
+```{r yourturn3_2_1, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+
+```{r yourturn3_2_1-solution}
 # answer
 
 lifeExp_by_continent <- gapminder %>%
@@ -651,7 +677,12 @@ Create a table that shows:
 * the countries Canada, United States, and Mexico are the columns, and 
 * the years after 1980 are the rows
 
-```{r}
+```{r yourturn3_3_1, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+
+```{r yourturn3_3_1-solution}
 
 gapminder %>%
   filter(year > 1980,
@@ -675,25 +706,20 @@ gapminder %>%
 <!-- This file by Martin Monkman is licensed under a Creative Commons Attribution 4.0 International License -->
 
 
-```{r}
-library(tidyverse)
-# data packages
-library(gapminder)
-
-```
-
 
 ## Your Turn 4.1
 
 {gapminder} again
 
-```{r}
-gapminder
+
+Using `select()` to reduce the number of variables to `country`, `year`, and `lifeExp`:
+
+```{r yourturn4_1_1, exercise=TRUE, exercise.eval=FALSE}
+
 ```
 
-Using `select()` to reduce the number of variables:
 
-```{r}
+```{r yourturn4_1_1-solution}
 # answer
 gapminder %>%                                
   select(country, year, lifeExp) 
@@ -707,7 +733,12 @@ You can use the minus sign to drop variable--that is, to define ones to _not_ se
 In this example, note we can use `c()` to create a list:
 
 
-```{r}
+```{r yourturn4_1_2, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+
+```{r yourturn4_1_2-solution}
 # answer
 gapminder %>%                                
   select(-(c(continent, pop, gdpPercap))) 
@@ -720,9 +751,9 @@ gapminder %>%
 
 
 
-You can define a range of columns to select by using the `:`
+You can also define a range of columns to select by using the `:`
 
-```{r}
+```{r yourturn4_1_3, exercise=TRUE, exercise.eval=FALSE}
 # answer
 gapminder %>%
   select(country, year:pop)
@@ -731,7 +762,8 @@ gapminder %>%
 
 ## Take aways
 
-* Restructure data frames with `select()` and `pull()`  
+* Restructure data frames with `select()` 
+* Different ways to define what variables are selected by `select()`
 * Reinforce other data transformation functions
 
 
