@@ -169,7 +169,7 @@ icon3 <- "noun_Tudor house_1153286_burgundy.png"
 
 tutormanner_hex <- 
   sticker(icon3, package="tutormanner", 
-          s_x = 1, s_y = 1.3, 
+          s_x = 1, s_y = 1.25, 
           s_width = 0.65, s_height = 0.65,
           h_fill = yellow, h_color = burgundy, h_size = 1.5,
           p_size=16, p_color = burgundy,
