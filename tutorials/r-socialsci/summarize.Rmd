@@ -1,0 +1,134 @@
+---
+title: "summarize"
+author: "Martin Monkman"
+date: "2020/03/07"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This exercise uses the SAFI data, and is a modification of content in the [Data Carpentries "R for Social Scientists"](https://datacarpentry.org/r-socialsci/)
+
+Load the tidyverse and data frame (creates an object named `interviews`):
+
+```{r, results = 'hide', purl = FALSE, message=FALSE}
+
+## load the tidyverse
+library(tidyverse)
+
+interviews <- read_csv("data/SAFI_clean.csv", na = "NULL")
+
+## inspect the data
+interviews
+
+## preview the data
+# View(interviews)
+```
+
+
+### Split-apply-combine data analysis and the summarize() function
+
+Many data analysis tasks can be approached using the *split-apply-combine*
+paradigm: split the data into groups, apply some analysis to each group, and
+then combine the results. **`dplyr`** makes this very easy through the use of
+the `group_by()` function.
+
+
+#### The `summarize()` function
+
+`group_by()` is often used together with `summarize()`, which collapses each
+group into a single-row summary of that group.  `group_by()` takes as arguments
+the column names that contain the **categorical** variables for which you want
+to calculate the summary statistics. So to compute the average household size by village:
+
+```{r, purl = FALSE}
+interviews %>%
+    group_by(village) %>%
+    summarize(mean_no_membrs = mean(no_membrs))
+```
+
+You may also have noticed that the output from these calls doesn't run off the
+screen anymore. It's one of the advantages of `tbl_df` over data frame.
+
+You can also group by multiple columns:
+
+```{r, purl = FALSE}
+interviews %>%
+    group_by(village, memb_assoc) %>%
+    summarize(mean_no_membrs = mean(no_membrs))
+```
+
+When grouping both by `village` and `membr_assoc`, we see rows in our table for
+respondents who did not specify whether they were a member of an irrigation
+association. We can exclude those data from our table using a filter step.
+
+
+```{r, purl = FALSE}
+interviews %>%
+    filter(!is.na(memb_assoc)) %>%
+    group_by(village, memb_assoc) %>%
+    summarize(mean_no_membrs = mean(no_membrs))
+```
+
+Once the data are grouped, you can also summarize multiple variables at the same
+time (and not necessarily on the same variable). For instance, we could add a
+column indicating the minimum household size for each village for each group
+(members of an irrigation association vs not):
+
+```{r, purl = FALSE}
+interviews %>%
+    filter(!is.na(memb_assoc)) %>%
+    group_by(village, memb_assoc) %>%
+    summarize(mean_no_membrs = mean(no_membrs),
+              min_membrs = min(no_membrs))
+```
+
+It is sometimes useful to rearrange the result of a query to inspect the values. For instance, we can sort on `min_membrs` to put the group
+with the smallest household first:
+
+
+```{r, purl = FALSE}
+interviews %>%
+    filter(!is.na(memb_assoc)) %>%
+    group_by(village, memb_assoc) %>%
+    summarize(mean_no_membrs = mean(no_membrs), min_membrs = min(no_membrs)) %>%
+    arrange(min_membrs)
+```
+
+To sort in descending order, we need to add the `desc()` function. If we want to sort the results by decreasing order of minimum household size:
+
+```{r, purl = FALSE}
+interviews %>%
+    filter(!is.na(memb_assoc)) %>%
+    group_by(village, memb_assoc) %>%
+    summarize(mean_no_membrs = mean(no_membrs),
+              min_membrs = min(no_membrs)) %>%
+    arrange(desc(min_membrs))
+```
+
+#### Counting
+
+When working with data, we often want to know the number of observations found
+for each factor or combination of factors. For this task, **`dplyr`** provides
+`count()`. For example, if we wanted to count the number of rows of data for
+each village, we would do:
+
+```{r, purl = FALSE}
+interviews %>%
+    count(village)
+```
+
+For convenience, `count()` provides the `sort` argument to get results in decreasing order:
+
+```{r, purl = FALSE}
+interviews %>%
+    count(village, sort = TRUE)
+```
+
+
+-30-
+
+
+-30-
