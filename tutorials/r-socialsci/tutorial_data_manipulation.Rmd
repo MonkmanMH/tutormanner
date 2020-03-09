@@ -12,9 +12,19 @@ knitr::opts_chunk$set(echo = FALSE)
 library(dplyr)
 library(tidyr)
 library(readr)
+library(lubridate)
 
 # load data
 interviews <- read_csv("data/SAFI_clean.csv", na = "NULL")
+interviews_wide <- readRDS(file = "data/interviews_wide.rds")
+interviews_long <- readRDS(file = "data/interviews_long.rds")
+interviews_items_owned <- readRDS(file = "data/interviews_items_owned.rds")
+interviews_items_owned_NA <- readRDS(file = "data/interviews_items_owned_NA.rds")
+interviews_months_lack_food <- readRDS(file = "data/interviews_months_lack_food.rds")
+
+#
+# to load local version
+#interviews <- read_csv("tutorials/r-socialsci/data/SAFI_clean.csv", na = "NULL")
 
 
 ```
@@ -36,7 +46,7 @@ interviews <- read_csv("data/SAFI_clean.csv", na = "NULL")
 
 **`dplyr`** is a package for making tabular data manipulation easier by using a limited set of functions that can be combined to extract and summarize insights from your data. It pairs nicely with **`tidyr`** which enables you to swiftly convert between different data formats (long vs. wide) for plotting and analysis.
 
-Along with a number of other packages, **`dplyr`** and **`tidyr`** are part of the tidyverse. These packages are loaded in R's memory when we call them individually using `library(dplyr)` and `library(tidry)`, or we can load them along with the other packages in the tidyverse: `library(tidyverse)`.
+Along with a number of other packages, **`dplyr`** and **`tidyr`** are part of the tidyverse. These packages are loaded in R's memory when we call them individually using `library(dplyr)` and `library(tidyr)`, or we can load them along with the other packages in the tidyverse: `library(tidyverse)`.
 
 
 
@@ -45,7 +55,7 @@ Along with a number of other packages, **`dplyr`** and **`tidyr`** are part of t
 
 An R package is a complete unit for sharing code with others. Each R package contains the code for a set of R functions, the documentation (or description) for each of the functions, as well as a practice dataset to learn the functions on. 
 
-Generally, each R package is built with a specific task in mind. For instance, the package **`dplyr`** provides easy tools for the most common data manipulation tasks. It is built to work directly with data frames, with many common tasks optimized by being written in a compiled language (C++) (not all R packages are written in R!). 
+Generally, each R package is built with a specific task in mind. For instance, the package **`dplyr`** provides easy tools for the most common data manipulation tasks. It is built to work directly with data frames, with many common tasks optimized by being written in a compiled language (C++) (not all R packages are written in R!) 
 
 The package **`tidyr`** addresses the common problem of wanting to reshape your data for plotting and use by different R functions. Sometimes we want data sets where we have one row per measurement. Sometimes we want a data frame where each measurement type has its own column, and rows are instead more aggregated groups. Moving back and forth between these formats is nontrivial, and **`tidyr`** gives you tools for this and more sophisticated  data manipulation.
 
@@ -85,7 +95,6 @@ represent:
 <!-- ```{r, results = 'hide', purl = FALSE, message=FALSE} -->
 
 ```{r SAFI_data_load, message=FALSE}
-# ## load the tidyverse
 # interviews <- read_csv("data/SAFI_clean.csv", na = "NULL")
 ```
 
@@ -279,4 +288,492 @@ interviews_total_meals <- interviews %>%
 ```
 
 
-**THE END (_temporarily_)**
+## Split-apply-combine data analysis and the summarize() function
+
+Many data analysis tasks can be approached using the *split-apply-combine*
+paradigm: split the data into groups, apply some analysis to each group, and
+then combine the results. **`dplyr`** makes this very easy through the use of
+the `group_by()` function.
+
+
+## The `summarize()` function
+
+`group_by()` is often used together with `summarize()`, which collapses each
+group into a single-row summary of that group.  `group_by()` takes as arguments
+the column names that contain the **categorical** variables for which you want
+to calculate the summary statistics. So to compute the average household size by village:
+
+```{r, summarize01_example, exercise=TRUE, exercise.eval=FALSE}
+interviews %>%
+    group_by(village) %>%
+    summarize(mean_no_membrs = mean(no_membrs))
+```
+
+
+You can also group by multiple columns:
+
+```{r, summarize02_example, exercise=TRUE, exercise.eval=FALSE}
+interviews %>%
+    group_by(village, memb_assoc) %>%
+    summarize(mean_no_membrs = mean(no_membrs))
+```
+
+When grouping both by `village` and `membr_assoc`, we see rows in our table for
+respondents who did not specify whether they were a member of an irrigation
+association. We can exclude those data from our table using a filter step.
+
+
+```{r, summarize03_example, exercise=TRUE, exercise.eval=FALSE}
+interviews %>%
+    filter(!is.na(memb_assoc)) %>%
+    group_by(village, memb_assoc) %>%
+    summarize(mean_no_membrs = mean(no_membrs))
+```
+
+Once the data are grouped, you can also summarize multiple variables at the same
+time (and not necessarily on the same variable). For instance, we could add a
+column indicating the minimum household size for each village for each group
+(members of an irrigation association vs not):
+
+```{r, summarize04_example, exercise=TRUE, exercise.eval=FALSE}
+interviews %>%
+    filter(!is.na(memb_assoc)) %>%
+    group_by(village, memb_assoc) %>%
+    summarize(mean_no_membrs = mean(no_membrs),
+              min_membrs = min(no_membrs))
+```
+
+It is sometimes useful to rearrange the result of a query to inspect the values. For instance, we can sort on `min_membrs` to put the group
+with the smallest household first:
+
+
+```{r, summarize05_example, exercise=TRUE, exercise.eval=FALSE}
+interviews %>%
+    filter(!is.na(memb_assoc)) %>%
+    group_by(village, memb_assoc) %>%
+    summarize(mean_no_membrs = mean(no_membrs), min_membrs = min(no_membrs)) %>%
+    arrange(min_membrs)
+```
+
+To sort in descending order, we need to add the `desc()` function. If we want to sort the results by decreasing order of minimum household size:
+
+```{r, summarize06_example, exercise=TRUE, exercise.eval=FALSE}
+interviews %>%
+    filter(!is.na(memb_assoc)) %>%
+    group_by(village, memb_assoc) %>%
+    summarize(mean_no_membrs = mean(no_membrs),
+              min_membrs = min(no_membrs)) %>%
+    arrange(desc(min_membrs))
+```
+
+## Counting
+
+When working with data, we often want to know the number of observations found
+for each factor or combination of factors. For this task, **`dplyr`** provides
+`count()`. For example, if we wanted to count the number of rows of data for
+each village, we would do:
+
+```{r, counting01_example, exercise=TRUE, exercise.eval=FALSE}
+interviews %>%
+    count(village)
+```
+
+For convenience, `count()` provides the `sort` argument to get results in decreasing order:
+
+```{r, counting02_example, exercise=TRUE, exercise.eval=FALSE}
+interviews %>%
+    count(village, sort = TRUE)
+```
+
+## Exercise 3: summarize
+
+1. How many households in the survey have an average of
+two meals per day? Three meals per day? Are there any other numbers
+of meals represented?
+
+```{r data_manip_ex3_1, exercise=TRUE, exercise.eval=TRUE}
+
+
+
+```
+
+
+```{r data_manip_ex3_1-solution}
+
+## Solution
+interviews %>%
+  count(no_meals)
+```
+
+
+2. Use `group_by()` and `summarize()` to find the mean, min, and max
+number of household members for each village. Also add the number of
+observations (hint: see `?n`).
+
+```{r data_manip_ex3_2, exercise=TRUE, exercise.eval=TRUE}
+
+
+
+```
+
+
+```{r data_manip_ex3_2-solution}
+
+## Solution
+
+interviews %>%
+  group_by(village) %>%
+  summarize(
+   mean_no_membrs = mean(no_membrs),
+   min_no_membrs = min(no_membrs),
+   max_no_membrs = max(no_membrs),
+   n = n()
+  )
+```
+
+
+3. What was the largest household interviewed in each month?
+
+Note: this will require you to use functions from the package **lubridate**. The 
+reference pages for that package are here: [lubridate.tidyverse.org/](https://lubridate.tidyverse.org/)
+
+
+```{r data_manip_ex3_3, exercise=TRUE, exercise.eval=TRUE}
+
+
+
+```
+
+
+```{r data_manip_ex3_3-solution}
+## Solution
+
+# if not already included, add month, year, and day columns
+library(lubridate) # load lubridate if not already loaded
+
+interviews %>%
+ mutate(month = month(interview_date),
+        day = day(interview_date),
+        year = year(interview_date)) %>%
+ group_by(year, month) %>%
+ summarize(max_no_membrs = max(no_membrs))
+
+```
+
+
+## Reshaping with pivot_wider and pivot_longer
+
+There are four rules defining a tidy dataset:
+
+1. Each variable has its own column
+2. Each observation has its own row
+3. Each value must have its own cell
+4. Each type of observational unit forms a table
+
+Here we examine the fourth rule: Each type of observational unit forms a table.
+
+In `interviews`, each row contains the values of variables associated with each
+record (the unit), values such as the number of household members or possessions
+associated with each record. What if instead of comparing records, we wanted to
+look at differences in households grouped by different types of housing
+construction materials?
+
+We'd need to create a new table where each row (the unit) is comprised
+of values of variables associated with each housing material (e.g. for
+`respondent_wall_type`). In practical terms this means the values
+of the wall construction materials in `respondent_wall_type` would
+become the names of column variables and the cells would contain `TRUE` or `FALSE`.
+
+Having created a new table, we can now explore the relationship within and
+between household types--for example we could compare the ratio of household
+members to sleeping rooms grouped by type of construction material. The key
+point here is that we are still following a tidy data structure, but we have
+**reshaped** the data according to the observations of interest.
+
+The opposite transformation would be to transform column names into values of
+a variable.
+
+We can do both these of transformations with two `tidyr` functions, `pivot_wider()`
+and `pivot_longer()`.
+
+## Pivoting wider
+
+`pivot_wider()` takes three principal arguments:
+
+1. the data
+2. the *names_from* column variable whose values will become new column names.
+3. the *values_from* column variable whose values will fill the new column variables.
+
+Further arguments include `values_fill` which, if set, fills in missing values with
+the value provided.
+
+Let's use `pivot_wider()` to transform interviews to create new columns for each type
+of wall construction material. We use the pipe as before too. Because both the
+`names_from` and `values_from` parameters must come from column values, we will create a
+dummy column (we'll name it `wall_type_logical`) to hold the value `TRUE`, which
+we will then place into the appropriate column that corresponds to the wall
+construction material for that respondent. When using `mutate()` if you give a
+single value, it will be used for all observations in the dataset. 
+
+For each row in our newly pivoted table, only one of the newly created wall type columns will be `TRUE`. The default value that `pivot_wider` uses to fill the other wall types is `NA`.
+
+
+```{r, fig.width = 3}
+knitr::include_graphics("images/pivot_long_to_wide.png")
+```
+
+
+
+Instead of the default value of `NA`, we want them to be `FALSE`. We will use `values_fill = list(wall_type_logcial = FALSE)` in `pivot_wider()` to fill the rest of the new columns for that row with `FALSE`.
+
+
+```{r pivot_01, exercise=TRUE, exercise.eval=TRUE}
+interviews_wide <- interviews %>%
+    mutate(wall_type_logical = TRUE) %>%
+    pivot_wider(names_from = respondent_wall_type, 
+                values_from = wall_type_logical, 
+                values_fill = list(wall_type_logical = FALSE))
+
+interviews_wide
+
+```
+
+<!--
+#saveRDS(interviews_wide, file = "tutorials/r-socialsci/data/interviews_wide.rds")
+#interviews_wide <- readRDS(file = "data/interviews_wide.rds")
+-->
+
+
+View the `interviews_wide` data frame and notice that there is no longer a
+column titled `respondent_wall_type`. This is because there is a default
+parameter in `pivot_wider()` that drops the original column. The values that were
+in that column have now become variables `muddaub`, `burntbricks`, `sunbricks`, and 
+`cement`.
+
+
+
+## Pivoting longer
+
+The opposing situation could occur if we had been provided with data in the form
+of `interviews_wide`, where the building materials are column names, but we
+wish to treat them as values of a `respondent_wall_type` variable instead.
+
+In this situation we are gathering the column names and turning them into a pair
+of new variables. One variable represents the column names as values, and the
+other variable contains the values previously associated with the column names.
+We will do this in two steps to make this process a bit clearer.
+
+`pivot_longer()` takes four principal arguments:
+
+1. the data
+2. *cols* are the names of the columns we use to fill the values variable (or to drop).
+3. the *names_to* column variable we wish to create from column names.
+4. the *values_to* column variable we wish to create and fill with values
+associated with the named columns.
+
+To recreate our original data frame, we will use the following:
+
+1. the data - `interviews_wide`
+2. the *cols* are the names of the columns that are to be reshaped;
+   in this case, they are specified in a list using `c()`.
+3. the *names_to* column will be "respondent_wall_type" (as a character string). This
+   is the name of the new column we want to create.
+4. the *values_to* column will be "wall_type_logical" (as a character string). 
+   This will be populated with either `TRUE` or `FALSE`.
+
+
+```{r pivot_02, exercise=TRUE, exercise.eval=TRUE}
+interviews_long <- interviews_wide %>%
+    pivot_longer(cols = c(burntbricks, cement, muddaub, sunbricks),
+                 names_to = "respondent_wall_type", 
+                 values_to = "wall_type_logical")
+
+```
+
+
+
+```{r, fig.width = 3}
+knitr::include_graphics("images/pivot_wide_to_long.png")
+```
+
+This creates a data frame with `r nrow(interviews_long)` rows (4 rows per interview respondent). The four rows for each respondent differ only in the value of the "respondent_wall_type" and "wall_type_logical" columns. View the data to see what this looks like.
+
+Only one row for each interview respondent is informative--we know that if the
+house walls are made of "sunbrick" they aren't made of any other the other
+materials. Therefore, we can filter our dataset to only keep values where
+`wall_type_logical` is `TRUE`. Because `wall_type_logical` is already either
+`TRUE` or `FALSE`, when passing the column name to `filter()`, it will
+automatically already only keep rows where this column has the value `TRUE`. We
+can then remove the `wall_type_logical` column. We do all of these steps
+together in the next chunk of code:
+
+
+```{r pivot_03, exercise=TRUE, exercise.eval=TRUE}
+interviews_long <- interviews_wide %>%
+    pivot_longer(cols = c(burntbricks, cement, muddaub, sunbricks),
+                 names_to = "respondent_wall_type", 
+                 values_to = "wall_type_logical") %>%
+    filter(wall_type_logical) %>%
+    select(-wall_type_logical)
+
+interviews_long
+```
+
+
+<!--
+#saveRDS(interviews_long, file = "tutorials/r-socialsci/data/interviews_long.rds")
+#interviews_long <- readRDS(file = "data/interviews_long.rds")
+-->
+
+View both `interviews_long` and `interviews_wide` and compare their
+structure. 
+
+
+## Applying `pivot_wider()` to clean our data
+
+Now that we've learned about `pivot_longer()` and `pivot_wider()` we're going to put these
+functions to use to fix a problem with the way that our data is structured. You may
+have already learned that it's best practice to have only a
+single piece of information in each cell of your spreadsheet. In this dataset,
+we have several columns which contain multiple pieces of information. For
+example, the `items_owned` column contains information about whether our
+respondents owned a fridge, a television, etc. To make this data easier to
+analyze, we will split this column and create a new column for each item. Each
+cell in that column will either be `TRUE` or `FALSE` and will indicate whether
+that interview respondent owned that item.
+
+
+```{r pivot_04, exercise=TRUE, exercise.eval=TRUE}
+interviews_items_owned <- interviews %>%
+    separate_rows(items_owned, sep=";") %>%
+    mutate(items_owned_logical = TRUE) %>%
+    pivot_wider(names_from = items_owned, 
+                values_from = items_owned_logical, 
+                values_fill = list(items_owned_logical = FALSE))
+
+nrow(interviews_items_owned)
+
+
+```
+
+<!--
+#saveRDS(interviews_items_owned, file = "tutorials/r-socialsci/data/interviews_items_owned.rds")
+#interviews_items_owned <- readRDS(file = "data/interviews_items_owned.rds")
+-->
+
+
+There are a couple of new concepts in this code chunk. Let's walk through it
+line by line. First we create a new object (`interviews_items_owned`) based on
+the `interviews` dataframe.
+
+`interviews_items_owned <- interviews %>%`
+
+Then we use the new function `separate_rows()` from the **`tidyr`** package to split the column `items_owned`
+based on the presence of semi-colons (`;`). This creates a long format version of the dataset, which has multiple rows for each respondent, each row with a unique item. For example, if a respondent has a television and a solar panel, that respondent will now have two rows, one with "television" and the other with "solar panel" in the `items_owned` column.
+
+`separate_rows(items_owned, sep=";") %>%`
+
+Lastly, we use `pivot_wider()` to switch from long format to wide format. This
+creates a new column for each of the unique values in the `split_items` column,
+and fills those columns with `TRUE` or `FALSE`.
+
+`mutate(items_owned_logical = TRUE) %>%`
+
+`pivot_wider(names_from = items_owned,`
+
+`            values_from = items_owned_logical,`
+
+`            values_fill = list(items_owned_logical = FALSE))`
+
+
+View the `interviews_items_owned` data frame. It should have 
+`r nrow(interviews)` rows (the same number of rows you had originally), but extra
+columns for each item. 
+
+You may notice that one of the columns in called `\`<NA>\`. This is because the respondents did not own any of the items that was in the interviewer's list. We can use the `rename()` function to change this name to something more meaningful:
+
+```{r pivot_05, exercise=TRUE, exercise.eval=TRUE}
+interviews_items_owned_NA <- interviews_items_owned %>%
+    rename(no_listed_items = `NA`)
+
+```
+
+
+<!--
+#saveRDS(interviews_items_owned_NA, file = "tutorials/r-socialsci/data/interviews_items_owned_NA.rds")
+#interviews_items_owned_NA <- readRDS(file = "data/interviews_items_owned_NA.rds")
+-->
+
+This format of the data allows us to do interesting things, like make a table
+showing the number of respondents in each village who owned a particular item:
+
+```{r pivot_06, exercise=TRUE, exercise.eval=TRUE}
+interviews_items_owned_NA %>%
+    filter(bicycle) %>%
+    group_by(village) %>%
+    count(bicycle)
+```
+
+Or calculate the average number of items from the list owned
+by respondents in each village:
+
+```{r pivot_07, exercise=TRUE, exercise.eval=TRUE}
+interviews_items_owned_NA %>%
+    mutate(number_items = rowSums(select(., bicycle:television))) %>%
+    group_by(village) %>%
+    summarize(mean_items = mean(number_items))
+```
+
+## Exercise 4: Reshaping
+
+1. Create a new data frame (named `interviews_months_lack_food`) that has one
+column for each month and records `TRUE` or `FALSE` for whether each interview
+respondent was lacking food in that month.
+
+```{r data_manip_ex4_1, exercise=TRUE, exercise.eval=TRUE}
+
+
+
+```
+
+
+```{r data_manip_ex4_1-solution}
+
+## Solution
+interviews_months_lack_food <- interviews %>%
+  separate_rows(months_lack_food, sep=";") %>%
+  mutate(months_lack_food_logical  = TRUE) %>%
+  pivot_wider(names_from = months_lack_food, 
+           values_from = months_lack_food_logical, 
+           values_fill = list(months_lack_food_logical = FALSE))
+
+```
+
+
+<!--
+#saveRDS(interviews_items_owned, file = "tutorials/r-socialsci/data/interviews_items_owned.rds")
+#interviews_months_lack_food <- readRDS(file = "data/interviews_months_lack_food.rds")
+-->
+
+
+2. How many months (on average) were respondents without food if
+they did belong to an irrigation association? What about if they didn't?
+
+
+```{r data_manip_ex4_2, exercise=TRUE, exercise.eval=TRUE}
+
+
+
+```
+
+
+```{r data_manip_ex4_2-solution}
+
+## Solution
+
+interviews_months_lack_food %>%
+  mutate(number_months = rowSums(select(., Apr:Sept))) %>%
+  group_by(memb_assoc) %>%
+  summarize(mean_months = mean(number_months))
+
+```
