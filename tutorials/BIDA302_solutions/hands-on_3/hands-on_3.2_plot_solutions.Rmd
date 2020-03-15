@@ -6,7 +6,12 @@ runtime: shiny_prerendered
 ---
 
 
-<!-- This file by Martin Monkman is licensed under a Creative Commons Attribution 4.0 International License. -->
+<!-- This file by Martin Monkman is licensed under a Creative Commons Attribution 4.0 International License. 
+
+Some of these examples are modified from http://euclid.psych.yorku.ca/www/psy6135/tutorials/gapminder.html. Thanks Michael!
+
+-->
+
 
 ```{r setup, include=FALSE}
 library(learnr)
@@ -37,16 +42,21 @@ gapminder_2007 <- readRDS(file = "gapminder_2007.rds")
 
 ### REFERENCES
 
-* _R4DS_, ["Data visualisation"](https://r4ds.had.co.nz/data-visualisation.html)
+These two chapters in _R for Data Science_ provide additional background:
 
-* _R4DS_, ["Exploratory Data Analysis"](https://r4ds.had.co.nz/exploratory-data-analysis.html)
+* ["Data visualisation"](https://r4ds.had.co.nz/data-visualisation.html)
+
+* ["Exploratory Data Analysis"](https://r4ds.had.co.nz/exploratory-data-analysis.html)
 
 
 
 
 ## 1. Scatter plot: GDP by life expectancy
 
-For this and some of the other examples, we will be using just the 2007 data.
+Scatter plots are sometimes known as "X-Y plots" because they compare two values for the same observation. 
+
+
+For this and some of the other examples, we will be using just the 2007 data from the {gapminder} package.
 
 
 ### Your Turn 1.1
@@ -58,10 +68,9 @@ Create a dataframe object with the name "gapminder_2007" by filtering the gapmin
 ```
 
 ```{r scatterplot1-solution}
-# easy peasy
-
+# filter the data
 gapminder_2007 <- filter(gapminder, year == 2007)
-
+# show the new data object
 gapminder_2007
 
 ```
@@ -79,16 +88,15 @@ Let's take a look at the structure of a basic `ggplot()` function:
 `  <GEOM_FUNCTION>(mapping = aes(<MAPPINGS>))`
 
 
-As you can see, the first thing in the function is the data frame you are using. Next comes the `geom_` which is the geometric structure you want to use--some examples are a line, or a histogram, or a point. We also need to specify which variables to plot; these go into `geom` as the `mapping = aes()`. Note that often, you will see a coding shortcut of just `aes()` (that is, no `mapping =`). 
+As you can see, the first thing in the function is the data frame you are using. 
+
+Next comes the `geom_` which is the geometric structure you want to use--some examples are a line, or a histogram, or a point. 
+
+We also need to specify which variables to plot; these go into `geom` as the `mapping = aes()`. Note that often, you will see a coding shortcut of just `aes()` (that is, no `mapping =`). 
 
 
 
-### Your Turn 1.2
-
-
-Scatter plots are sometimes known as "X-Y plots" because they compare two values for the same observation. 
-
-Create a simple scatterplot using the {gapminder} data, showing all the countries in the world for 2007, the per capita GDP on the _x_ axis, and life expectancy on the _y_. 
+This code creates a simple scatterplot using the {gapminder} data, showing all the countries in the world for 2007, the per capita GDP on the _x_ axis, and life expectancy on the _y_. 
 
 
 
@@ -96,7 +104,7 @@ This uses the `geom_point()` function.
 
  
 ```{r scatterplot1_2_1, exercise=TRUE, exercise.eval=FALSE}
-# example: a blank plot
+# example
 
 ggplot(gapminder_2007, mapping = aes(x = gdpPercap, y = lifeExp)) +
   geom_point()
@@ -104,17 +112,13 @@ ggplot(gapminder_2007, mapping = aes(x = gdpPercap, y = lifeExp)) +
 
 ```
 
-```{r scatterplot1_2_1-solution}
 
-# solution
-
-ggplot(gapminder_2007, aes(x = gdpPercap, y = lifeExp)) +
-  geom_point()
-
-```
+### Your Turn 1.2
 
 
-Now change the colour of the points by adding the `colour = ` argument to `geom_point()` 
+Now change the colour of the points by adding the `colour = ` argument to `geom_point()`.
+
+Note that the name of the colour has to be in quotation marks.
 
 ```{r scatterplot1_2_2, exercise=TRUE, exercise.eval=FALSE}
 
@@ -125,13 +129,14 @@ Now change the colour of the points by adding the `colour = ` argument to `geom_
 
 # change the colour of the points
 ggplot(gapminder_2007, aes(x = gdpPercap, y = lifeExp)) +
-  geom_point(colour = "blue")           # note that the colour has to be in quotation marks
+  geom_point(colour = "blue")           
 
 
 ```
 
-> b. Create a variant of the above plot, with each continent coloured differently. Try it again with shape instead of colour.
+Create a variant of the above plot, with each continent coloured differently.
 
+* Note that in this example, we want to add another variable (`continent`) so it gets added to the `aes()` list. 
  
 ```{r scatterplot1_2_3, exercise=TRUE, exercise.eval=FALSE}
 
@@ -142,6 +147,18 @@ ggplot(gapminder_2007, aes(x = gdpPercap, y = lifeExp)) +
 ggplot(gapminder_2007, aes(x = gdpPercap, y = lifeExp, colour = continent)) +
   geom_point()
 
+```
+
+Try it again with shape instead of colour.
+
+
+```{r scatterplot1_2_4, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+
+```{r scatterplot1_2_4-solution}
+# solution
 
 ggplot(gapminder_2007, aes(x = gdpPercap, y = lifeExp, shape = continent)) +
   geom_point()
@@ -149,19 +166,13 @@ ggplot(gapminder_2007, aes(x = gdpPercap, y = lifeExp, shape = continent)) +
 ```
 
 
-
-
-
-
-***
-
 ## 2. Histogram: life expectancy
 
 Histograms are ways to "bin" continuous variables into categories, and then count the number of observations in each bin.
 
 The geom is `geom_histogram()`.
 
-Like bar plots, you don't need a `y =` variable; the Y axis is the count of the number of observations.
+Note that you don't need a `y =` variable; the Y axis is the count of the number of observations.
 
 ### Your turn 2.1
 
@@ -271,7 +282,7 @@ Note that the data is already identified, so you don't include it after `ggplot`
 And as we saw earlier, the `aes()` could also be included in the `geom_()` function.
 
 
-```{r histogram3_1_1, exercise=TRUE, exercise.eval=FALSE}
+```{r line3_1_1, exercise=TRUE, exercise.eval=FALSE}
 # example: a point graph
 gapminder %>%
   filter(country == "Canada") %>%
@@ -284,11 +295,11 @@ gapminder %>%
 
 
 
-```{r histogram3_1_2, exercise=TRUE, exercise.eval=FALSE}
+```{r line3_1_2, exercise=TRUE, exercise.eval=FALSE}
 
 ```
 
-```{r histogram3_1_2-solution}
+```{r line3_1_2-solution}
 
 
 # solution 1
@@ -315,7 +326,11 @@ Modify the code you wrote in #3.1 to show the life expectancy for Canada, Oman, 
 
 (In 2007, Japan had the longest life expectancy of any country, and in the years between 1952 and 2007, Oman had the biggest increase--a change of 38 years! The code for how I determined this is at the bottom of the page.) 
 
-```{r}
+```{r line3_2_1, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+```{r line3_2_1-solution}
 
 country_list <- c("Canada", "Oman", "Japan")
 
@@ -335,7 +350,11 @@ Layering geoms ... it is possible to add geoms to a plot.
 
 See what happens when you use the code from 3.2, with `geom_line`, and then add the `geom_point` from the example in 3.1.
 
-```{r}
+```{r line3_2_1, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+```{r line3_2_1-solution}
 
 # solution
 gapminder %>%
@@ -349,28 +368,6 @@ gapminder %>%
 ```
 
 
-### BONUS CALCULATIONS
-
-
-Biggest change in life expectancy
-
-```{r}
-
-gapminder %>%
-  filter(year %in% c(1952, 2007)) %>%
-  group_by(country) %>%
-  mutate(lifeExp_change = lifeExp - lag(lifeExp)) %>%
-  arrange(desc(lifeExp_change))
-
-
-```
-
-
-
-
-### REFERENCE
-
-Some of these examples are modified from http://euclid.psych.yorku.ca/www/psy6135/tutorials/gapminder.html. Thanks Michael!
 
 
 
