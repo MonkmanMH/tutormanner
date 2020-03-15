@@ -62,6 +62,7 @@ Create a dataframe object with the name "gapminder_2007" by filtering the gapmin
 
 gapminder_2007 <- filter(gapminder, year == 2007)
 
+gapminder_2007
 
 ```
 <!--
@@ -69,23 +70,41 @@ gapminder_2007 <- filter(gapminder, year == 2007)
 #gapminder_2007 <- readRDS(file = "gapminder_2007.rds")
 -->
 
+### {ggplot} function
+
+Let's take a look at the structure of a basic `ggplot()` function:
+
+`ggplot(data = <DATA>) + `
+
+`  <GEOM_FUNCTION>(mapping = aes(<MAPPINGS>))`
+
+
+As you can see, the first thing in the function is the data frame you are using. Next comes the `geom_` which is the geometric structure you want to use--some examples are a line, or a histogram, or a point. We also need to specify which variables to plot; these go into `geom` as the `mapping = aes()`. Note that often, you will see a coding shortcut of just `aes()` (that is, no `mapping =`). 
+
+
 
 ### Your Turn 1.2
 
 
 Scatter plots are sometimes known as "X-Y plots" because they compare two values for the same observation. 
 
-Create a simple scatterplot using the {gapminder} data, showing all the countries in the world for 2007, the per capita GDP on the _x_ axis, and life expectancy on the _y_. This uses the `geom_point()` function.
+Create a simple scatterplot using the {gapminder} data, showing all the countries in the world for 2007, the per capita GDP on the _x_ axis, and life expectancy on the _y_. 
+
+
+
+This uses the `geom_point()` function.
 
  
-```{r scatterplot1_2, exercise=TRUE, exercise.eval=FALSE}
+```{r scatterplot1_2_1, exercise=TRUE, exercise.eval=FALSE}
 # example: a blank plot
 
-ggplot(gapminder_2007, aes(x = gdpPercap, y = lifeExp)) 
+ggplot(gapminder_2007, mapping = aes(x = gdpPercap, y = lifeExp)) +
+  geom_point()
+  
 
 ```
 
-```{r scatterplot1_2-solution}
+```{r scatterplot1_2_1-solution}
 
 # solution
 
@@ -94,6 +113,8 @@ ggplot(gapminder_2007, aes(x = gdpPercap, y = lifeExp)) +
 
 ```
 
+
+Now change the colour of the points by adding the `colour = ` argument to `geom_point()` 
 
 ```{r scatterplot1_2_2, exercise=TRUE, exercise.eval=FALSE}
 
@@ -112,7 +133,11 @@ ggplot(gapminder_2007, aes(x = gdpPercap, y = lifeExp)) +
 > b. Create a variant of the above plot, with each continent coloured differently. Try it again with shape instead of colour.
 
  
-```{r}
+```{r scatterplot1_2_3, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+```{r scatterplot1_2_3-solution}
 # solution
 ggplot(gapminder_2007, aes(x = gdpPercap, y = lifeExp, colour = continent)) +
   geom_point()
@@ -142,7 +167,11 @@ Like bar plots, you don't need a `y =` variable; the Y axis is the count of the 
 
 Make a histogram using `gapminder_2007`, showing the count of countries by life expectancy.
 
-```{r}
+```{r histogram2_1, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+```{r histogram2_1-solution}
 # solution
 ggplot(gapminder_2007, aes(x = lifeExp)) +
   geom_histogram()
@@ -155,7 +184,11 @@ ggplot(gapminder_2007, aes(x = lifeExp)) +
 
 An important option in the `geom_histogram()` function is `binwidth = `. This sets the range that each bin covers. Experiment with adding bin widths of 3, 5, and 10 to the histogram
 
-```{r}
+```{r histogram2_2_1, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+```{r histogram2_2_1-solution}
 # solution
 ggplot(gapminder_2007, aes(x = lifeExp)) +
   geom_histogram(binwidth = 3)
@@ -165,7 +198,11 @@ ggplot(gapminder_2007, aes(x = lifeExp)) +
 
 Some more formatting...like you did earlier with the points, change the colour of the bars to red.
 
-```{r}
+```{r histogram2_2_2, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+```{r histogram2_2_2-solution}
 # solution
 ggplot(gapminder_2007, aes(x = lifeExp)) +
   geom_histogram(binwidth = 3, colour = "red")
@@ -175,7 +212,11 @@ ggplot(gapminder_2007, aes(x = lifeExp)) +
 
 "colour" is the border of the bar! Use "fill" for the inside -- make a white bar with a black border
 
-```{r}
+```{r histogram2_2_3, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+```{r histogram2_2_3-solution}
 # solution
 ggplot(gapminder_2007, aes(x = lifeExp)) +
   geom_histogram(binwidth = 3, fill = "white", colour = "black")
@@ -188,7 +229,11 @@ ggplot(gapminder_2007, aes(x = lifeExp)) +
 
 What do you think happens when you put a "fill" option in the `aes()` function?
 
-```{r}
+```{r histogram2_3, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+```{r histogram2_3-solution}
 # solution
 
 # solution
@@ -226,13 +271,25 @@ Note that the data is already identified, so you don't include it after `ggplot`
 And as we saw earlier, the `aes()` could also be included in the `geom_()` function.
 
 
-```{r}
+```{r histogram3_1_1, exercise=TRUE, exercise.eval=FALSE}
 # example: a point graph
 gapminder %>%
   filter(country == "Canada") %>%
   # now the ggplot 
   ggplot(aes(x = year, y = lifeExp)) +  # IMPORTANT - it's a "+", not a "%>%"
   geom_point()
+
+
+```
+
+
+
+```{r histogram3_1_2, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+```{r histogram3_1_2-solution}
+
 
 # solution 1
 gapminder %>%
