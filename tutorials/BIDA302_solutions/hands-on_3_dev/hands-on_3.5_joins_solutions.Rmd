@@ -1,0 +1,323 @@
+---
+title: "Data manipulation: joins"
+subtitle: "hands-on examples, with answers"
+output: html_document
+---
+
+<!-- This file by Martin Monkman is licensed under a Creative Commons Attribution 4.0 International License. -->
+
+```{r setup}
+library(tidyverse)
+#
+library(nycflights13)
+```
+
+## Objectives
+
+* understand the function of keys in relational databases
+
+* understand how to join tables
+
+* understand the primary types of mutating and filtering joins
+
+
+## Relational data
+
+
+Often, the data you are working with are spread across multiple tables. This allows for efficient database storage (there's an entire discipline dedicated to database theory and practical implementations of those theories.)
+
+This requires you, the data analyst, to join tables, so that the information held in multiple tables can be used to answer the research question at hand.
+
+Earlier you worked with the {nycflights13} package; for this hands-on exercise we will return to it.
+
+In addition to `flights`, there are four other tables in the package:
+
+* `airlines`
+
+* `airports`
+
+* `planes`
+
+* `weather`
+
+The tables are _related_ to `flights` by the fact that they have variables in common. These are known as the "key" variables.
+
+This diagram shows the relationships:
+
+![nycflights13](relational-nycflights.png)
+
+
+## 1. Keys
+
+1. Primary: identifies a unique observation in the table.
+
+2. Foreign: a unique observation in another table, but not this one.
+
+An example: `tailnum`
+
+* _primary_ in `planes` -- there is only one observation for each aircraft
+
+* _foreign_ in `flights` -- a plane could have multiple flights in and out of NYC airports
+
+
+Having the same key in two tables forms the "relation" -- hence "relational database".
+
+
+### Your turn 1.1
+
+Use `count` to check that `planes$tailnum` is a primary key
+
+```{r}
+# solution (in _R4DS_)
+planes %>% 
+  count(tailnum) %>% 
+  filter(n > 1)
+
+# alternate solution
+planes %>% 
+  count(tailnum) %>% 
+  summarise(max(n))
+
+
+```
+
+
+Sometimes tables don't have a primary key! When that happens, it can be useful to create one -- `mutate()` and `row_number()` is one approach. This is a _surrogate key_.
+
+
+## 2. Mutating joins
+
+The first kind of joins are "mutating joins" -- new variables are added to one data frame from matching observations in another.
+
+## 2a. Understanding keys 
+
+* from [_R for Data Science, "Understanding joins"]("https://r4ds.had.co.nz/relational-data.html#mutating-joins")
+
+First, we will make two small tables, `x` and `y`
+
+```{r}
+x <- tribble(
+  ~key, ~val_x,
+     1, "x1",
+     2, "x2",
+     3, "x3"
+)
+
+y <- tribble(
+  ~key, ~val_y,
+     1, "y1",
+     2, "y2",
+     4, "y3"
+)
+
+
+```
+
+
+**inner joins**
+
+An inner join keeps only the observations where there is a match on both sides:
+
+```{r}
+
+inner_join(x, y, key = "key")
+
+```
+
+
+**left join**
+
+Left, right, and full joins are varieties of "outer joins".
+
+Join the two tables using a left join: ... all of the observations from the first table (on the left-hand side of the function), and variables from the matching records from the secon (the right-hand side of the function).
+
+The {dplyr} function for this is `left_join()`
+
+```{r}
+left_join(x, y, key = "key")
+```
+
+Note that all 3 of the `x` values are there; because there is no `y` observation with the key value of "3", the `val_y` value is `NA`.
+
+**right join**
+
+Is the same as a left join, but keeps all of the observations in `y`
+
+**full join**
+
+Keeps all of the observations in both `x` and `y`
+
+### Your turn 2.1
+
+See what happens when you join the tables with a `right_join()`, followed by a `full_join()`
+
+
+```{r}
+# solution
+full_join(x, y, key = "key")
+```
+
+
+### Your turn 2.2
+
+In this example, we will add the name of the airline to the `flights` table. First, we will make a smaller version of the `flights` table by selecting a few of the variables.
+
+```{r}
+flights2 <- flights %>% 
+  select(year:day, hour, origin, dest, tailnum, carrier)
+flights2
+```
+
+To this table we will add the name of the airline, which we can find in the table `airlines`.
+
+* both tables have the variable "carrier"
+
+* we want a `left_join`: all the `flight` observations, and adding the "name" variable from `airlines`
+
+
+```{r}
+# solution
+left_join(flights2, airlines, by = "carrier")
+# alternate version, using a pipe
+flights2 %>%
+  left_join(airlines, by = "carrier")
+```
+
+
+
+
+
+## 2.b Duplicate Keys - #1
+
+In real life, tables start to get more complex. It's often the case that you will have tables that have duplicate keys in one or both of the tables.
+
+The chunk below creates new versions of `x` and `y` tables, where there are duplicate keys in one.
+
+```{r}
+x <- tribble(
+  ~key, ~val_x,
+     1, "x1",
+     2, "x2",
+     2, "x3",
+     1, "x4"
+)
+
+y <- tribble(
+  ~key, ~val_y,
+     1, "y1",
+     2, "y2"
+)
+```
+
+
+### Your turn 2.3
+
+Join the tables with `left_join()`, with `x` as the table on the left.
+
+```{r}
+# solution
+
+left_join(x, y, key = "key")
+
+```
+
+
+A situation where there are duplicate keys in both tables is usually an error--there is no unique identifier of a single observation. (A question to ask yourself is "Is there are third table?")
+
+
+### Your turn 2.4
+
+Here's fresh versions of `x` and `y` tables, where the key "2" is duplicated in both.
+
+```{r}
+x <- tribble(
+  ~key, ~val_x,
+     1, "x1",
+     2, "x2",
+     2, "x3",
+     3, "x4"
+)
+y <- tribble(
+  ~key, ~val_y,
+     1, "y1",
+     2, "y2",
+     2, "y3",
+     3, "y4"
+)
+
+```
+
+
+What does a left join do? How many rows does the resulting table have?
+
+```{r}
+# solution
+
+left_join(x, y, by = "key")
+
+```
+
+
+
+
+
+***
+
+## 3. Filtering joins
+
+The other sort of joins filter observations from one data frame based on whether or not they match an observation in the other table.
+
+There are two sorts: 
+
+* `semi_join(x, y)` keeps all observations in `x` that have a match in `y`.
+
+* `anti_join(x, y)` drops all observations in `x` that have a match in `y`.
+
+
+Let's make some test tables again:
+
+
+```{r}
+x <- tribble(
+  ~key, ~val_x,
+     1, "x1",
+     2, "x2",
+     3, "x3"
+)
+y <- tribble(
+  ~key, ~val_y,
+     1, "y1",
+     2, "y2",
+     4, "y3"
+)
+```
+
+Semi-join: only the observations in `x` that have a match in `y`.
+
+Note that no variables from `y` appear in the result.
+
+```{r}
+semi_join(x, y, key = "key")
+```
+
+
+Anti-join: returns the observations in `x` that _don't_ have a key match in `y`. Again, no values from `y` appear in the result.
+
+```{r}
+anti_join(x, y, key = "key")
+```
+
+***
+
+## REFERENCE
+
+This hands-on exercise draws heavily on the following sources:
+
+* ["Relational data" at _R for Data Science_](https://r4ds.had.co.nz/relational-data.html)
+
+* ["Two-table verbs", article at the {dplyr} website](https://dplyr.tidyverse.org/articles/two-table.html)
+
+* ["Join two tbls together", part of the {dplyr} reference pages](https://dplyr.tidyverse.org/reference/join.html)
+
+* ["Join two tables" at the STAT545 site](https://stat545.com/join-cheatsheet.html)
+

@@ -1,0 +1,239 @@
+---
+title: "Categorical variables"
+subtitle: "factors with {forcats}"
+output: html_notebook
+---
+
+<!-- This file by Martin Monkman is licensed under a Creative Commons Attribution 4.0 International License. -->
+
+```{r setup}
+# tidyverse
+library(tidyverse)
+library(forcats)  # note that {forcats} isn't part of the core tidyverse so has to be loaded explicitly
+# data
+library(gapminder)
+```
+
+
+## Objectives
+
+* understand how factor type variables differ from character strings
+
+* understand how to manipulate factors
+
+
+## REFERENCES
+
+This hands-on exercise draws heavily on material at the following 
+
+* The [{forcats} reference site](https://forcats.tidyverse.org/)
+
+* ["Factors" in _R for Data Science_](https://r4ds.had.co.nz/factors.html) by Hadley Wickham & Garrett Grolemund
+
+* ["Be the boss of your factors" at STAT545](https://stat545.com/factors-boss.html)
+
+
+
+
+
+# 1. Categorical variables: factors
+
+We love factors. We hate factors. 
+
+Factors make working with categorical variables a breeze: you can sort them or arrange them arbitrarily (think days of the week), 
+
+But there are some traps that you might fall into, if you're not careful.
+
+The package {forcats} is _very_ helpful. 
+
+
+### Your turn 1.1
+
+Base R functions for working with factors
+
+| function | purpose |
+| ---- | ---- |
+| str | display structure of object |
+| class | returns the class of an object |
+| levels | returns the values of the levels |
+| nlevels | return the number of levels |
+
+
+
+
+
+```{r}
+
+str(gapminder$continent)
+
+class(gapminder$continent)
+
+# this is an important one!
+levels(gapminder$continent)
+
+nlevels(gapminder$continent)
+
+
+```
+
+
+### Your turn 1.2
+
+Use the `count()` function in a pipe to get a frequency table of each level in the factors in the `continent` variable
+
+```{r}
+# solution
+gapminder %>%
+  count(continent)
+
+```
+
+***
+
+## 2. Dropping levels
+
+A key thing to remember is that the factor levels exist separate from your data ... even if you filter the data, the factor levels stay the same unless you drop the extras.
+
+In this example, we see that there are 142 countries in `gapminder` -- and if filter it down to 4, there are still 142 levels associated with `country`.
+
+Leaving them in can cause problems, for instance when you try to plot them all.
+
+
+```{r}
+
+nlevels(gapminder$country)
+
+h_countries <- c("Belgium", "India", "Denmark", "Albania")  # see what I did there?
+
+h_gap <- gapminder %>%
+  filter(country %in% h_countries)
+
+nlevels(h_gap$country)
+
+```
+
+
+### Your turn 2.1
+
+The function we need here is `droplevels()`
+
+
+```{r}
+
+h_gap <- gapminder %>%
+  filter(country %in% h_countries) %>% 
+  droplevels()
+
+levels(h_gap$country)
+
+```
+
+***
+
+## 3. Changing the order of the factors
+
+As you can see with our country names above, the default arrangement is alphabetical. This is fine in some applications, but as we will see when we plot the data, we might want to sort them by another variable.
+
+
+
+### Your turn 3.1
+
+We might want to sort levels in an arbitrary way. 
+
+For example, our short country list would be more entertaining if it spelled out "BIDA".
+
+Here's the way the levels are arranged:
+
+```{r}
+
+h_gap$country %>% 
+  levels()
+
+```
+
+We can use `fct_relevel()` to change some or all of the levels.
+
+```{r}
+
+h_gap$country %>%
+  fct_relevel("Belgium", "India", "Denmark", "Albania") %>% 
+  levels()
+
+```
+
+
+
+
+What if we want to sort by the number of countries in each continent, that is, the number of times each factor occurs?
+
+`fct_infreq()` is what we need, or `fct_infreq() %>% fct_rev()` for backwards.
+
+### Your turn 3.2
+
+Give them a try on `continent` in gapminder.
+
+```{r}
+# solutions
+gapminder$continent %>%
+  fct_infreq() %>%
+  levels()
+
+gapminder$continent %>%
+  fct_infreq() %>%
+  fct_rev() %>%
+  levels()
+
+
+```
+
+In a pipe where we are using the entire data frame, it would look like this:
+
+```{r}
+
+gmind <- gapminder %>%
+  # sort the factors
+  mutate(continent = continent %>% 
+           fct_infreq() %>% 
+           fct_rev()) 
+
+levels(gmind$continent)
+
+```
+
+
+You can also sort by another variable in the data frame. In this example, the countries are sorted by minimum life expectancy.
+
+You can find other ways to sort in [STAT545, "Reorder factors"](https://stat545.com/factors-boss.html#reorder-factors)
+
+```{r}
+
+fct_reorder(gapminder$country, gapminder$lifeExp, min) %>%
+  levels() %>%
+  head()
+
+
+```
+
+
+
+### Your turn 3.3
+
+Recoding levels is similar to the renaming that's possible in `dplyr::select()`
+
+```{r}
+i_gap <- gapminder %>% 
+  filter(country %in% c("United States", "Sweden", "Australia")) %>% 
+  droplevels()
+
+i_gap$country %>% 
+  levels()
+
+i_gap$country %>%
+  fct_recode("USA" = "United States", "Oz" = "Australia") %>% 
+  levels()
+
+```
+
+
+
+

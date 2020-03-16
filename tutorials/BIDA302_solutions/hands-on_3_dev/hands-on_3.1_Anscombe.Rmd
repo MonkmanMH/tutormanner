@@ -1,0 +1,203 @@
+---
+title: "Anscombe's Quartet"
+output:
+  html_document:
+    df_print: paged
+---
+
+Using Anscobme's Quartet to introduce principles of data visualization.
+
+```{r setup}
+
+library(tidyverse)
+
+```
+
+
+
+The quartet is included in base R, but in an untidy format:
+
+```{r}
+
+anscombe
+
+```
+
+
+Reshape into tidy form:
+
+https://rpubs.com/dgrtwo/tidy-anscombe
+
+```{r evaluate = FALSE}
+# old-school `gather()` and `spread()`
+anscombe_tidy <- anscombe %>%
+  mutate(observation = seq_len(n())) %>%
+  gather(key, value, -observation) %>%
+  separate(key, c("variable", "set"), 1, convert = TRUE) %>%
+  mutate(set = c("I", "II", "III", "IV")[set]) %>%
+  spread(variable, value) %>%
+  arrange(set)
+
+head(anscombe_tidy)
+
+```
+
+
+
+## 1. Summary statistics
+
+Each of the four sets has the same summary statistics. Let's calculate them now:
+
+
+```{r}
+# example
+anscombe_tidy %>%
+  group_by(set) %>%
+  summarize(mean.x = mean(x))
+
+```
+
+### Your turn 1.1
+
+Using the following functions, calculate the summary statistics of _x_ and _y_, and the correlation coefficient between _x_ and _y_, for all four of the sets in the quartet:
+
+ | statistic | function |
+ | ----       | ----      |
+ | mean      | mean()   |
+ | standard deviation | sd() |
+ | correlation coefficient | cor() |
+ 
+ 
+
+```{r}
+# solution
+anscombe_tidy %>% 
+  group_by(set) %>% 
+  summarize(mean(x), 
+            sd(x), 
+            mean(y), 
+            sd(y), 
+            cor(x, y))
+
+
+```
+
+
+## 2. Visualizing the quartet
+
+Using the R visualization package {ggplot2}.
+
+The template of a `ggplot()` function call looks like this:
+
+`ggplot(data = <DATA>) + ` <BR>
+`  <GEOM_FUNCTION>(mapping = aes(<MAPPINGS>))`  
+
+
+With this example, the dataframe we're using is `anscombe_tidy` and we are plotting `x` and `y` as points.
+
+```{r}
+# example
+ggplot(anscombe_tidy) + 
+  geom_point(aes(x = x, y = y)) 
+
+
+```
+
+
+### Your turn 2.1
+
+
+
+With `colour` to differentiate each set
+
+```{r}
+# example
+ggplot(anscombe_tidy) + 
+  geom_point(aes(x = x, y = y, colour = set)) 
+
+
+
+```
+
+
+## Your turn 1.3
+
+Filter by set
+
+```{r}
+# solution
+anscombe_tidy %>%
+  filter(set == "I") %>%
+ggplot() + 
+  geom_point(aes(x, y), size = 3, colour = "purple")
+
+```
+
+
+
+
+## Your turn 1.4
+
+Facet plot
+
+```{r}
+
+ggplot(anscombe_tidy) + 
+  geom_point(aes(x, y)) + 
+  facet_wrap(~set)
+
+```
+
+
+
+## Your turn 1.5
+
+Add a trend line using the `geom_smooth` function.
+
+* the `method = lm` indicates a "linear model", i.e. a standard regression line. {ggplot2} provides access to other smoothing algorithms.
+
+* the `se = FALSE` turns off the "standard error" (a measure of uncertainty in the data)
+
+```{r}
+
+ggplot(anscombe_tidy) + 
+  geom_point(aes(x, y)) + 
+  geom_smooth(aes(x, y), method = lm) +
+  facet_wrap(~set)
+
+```
+
+
+But that duplicates the `aes(x, y)` text ... so we can move that into the `ggplot()` function. That way, the aesthetics apply to each of the `geom_` calls.
+
+
+```{r}
+
+ggplot(anscombe_tidy, aes(x, y)) + 
+  geom_point() + 
+  geom_smooth(method = lm, se = FALSE) + 
+  facet_wrap(~set)
+
+```
+
+
+### References
+
+https://rstudio-pubs-static.s3.amazonaws.com/52381_36ec82827e4b476fb968d9143aec7c4f.html 
+
+https://rstudio-pubs-static.s3.amazonaws.com/355492_5bbde2dd99134f47b03d834b030d509b.html
+
+https://plotlyblog.tumblr.com/post/68951620673/why-graph-anscombes-quartet 
+
+https://rpubs.com/dgrtwo/tidy-anscombe
+
+https://rpubs.com/turnersd/anscombe
+
+https://www.r-bloggers.com/the-visual-difference-%E2%80%93-r-and-anscombe%E2%80%99s-quartet/
+
+
+#### Excel references
+
+https://projects.ncsu.edu/labwrite/res/gt/gt-reg-home.html
+
+
