@@ -27,7 +27,7 @@ gapminder_2007 <- readRDS(file = "gapminder_2007.rds")
 
 ```
 
-## 1. Plotting
+## Plotting with {ggplot2} 
 
 ### Objectives
 
@@ -90,6 +90,8 @@ Let's take a look at the structure of a basic `ggplot()` function:
 
 As you can see, the first thing in the function is the data frame you are using. 
 
+_NOTE: the connector between the lines is a `+` -- not the `%>%` symbol!_
+
 Next comes the `geom_` which is the geometric structure you want to use--some examples are a line, or a histogram, or a point. 
 
 We also need to specify which variables to plot; these go into `geom` as the `mapping = aes()`. Note that often, you will see a coding shortcut of just `aes()` (that is, no `mapping =`). 
@@ -136,7 +138,7 @@ ggplot(gapminder_2007, aes(x = gdpPercap, y = lifeExp)) +
 
 Create a variant of the above plot, with each continent coloured differently.
 
-* Note that in this example, we want to add another variable (`continent`) so it gets added to the `aes()` list. 
+* Note that in this case, we want to add another variable (`continent`), so that is specified in the `aes()` parameters, not in the `geom_point()`. 
  
 ```{r scatterplot1_2_3, exercise=TRUE, exercise.eval=FALSE}
 
@@ -240,6 +242,8 @@ ggplot(gapminder_2007, aes(x = lifeExp)) +
 
 What do you think happens when you put a "fill" option in the `aes()` function?
 
+* Hint: think back to the code for example #1.2.
+
 ```{r histogram2_3, exercise=TRUE, exercise.eval=FALSE}
 
 ```
@@ -255,7 +259,6 @@ ggplot(gapminder_2007, aes(x = lifeExp, fill = continent)) +
 
 
 
-***
 
 ## 3. Line graph: change in life expectancy over time
 
@@ -277,7 +280,7 @@ Here's an example that uses the `geom_point` from earlier...change this to a lin
 
 You can add a `ggplot()` call as part of a pipe! This means that you can filter, mutate, group, etc and then pipe those results into a plot.
 
-Note that the data is already identified, so you don't include it after `ggplot`.
+Note that the data you use is already identified at the top of the pipe, so you don't include it after `ggplot()`...the `ggplot()` function uses whatever results after the previous commands in the pipe.
 
 And as we saw earlier, the `aes()` could also be included in the `geom_()` function.
 
@@ -350,11 +353,11 @@ Layering geoms ... it is possible to add geoms to a plot.
 
 See what happens when you use the code from 3.2, with `geom_line`, and then add the `geom_point` from the example in 3.1.
 
-```{r line3_2_1, exercise=TRUE, exercise.eval=FALSE}
+```{r line3_3_1, exercise=TRUE, exercise.eval=FALSE}
 
 ```
 
-```{r line3_2_1-solution}
+```{r line3_3_1-solution}
 
 # solution
 gapminder %>%
@@ -369,6 +372,23 @@ gapminder %>%
 
 
 
+
+
+### BONUS CALCULATIONS
+
+
+Biggest change in life expectancy between 1952 and 2007.
+
+```{r bonus_calculation, exercise=TRUE, exercise.eval=FALSE}
+
+gapminder %>%
+  filter(year %in% c(1952, 2007)) %>%
+  group_by(country) %>%
+  mutate(lifeExp_change = lifeExp - lag(lifeExp)) %>%
+  arrange(desc(lifeExp_change))
+
+
+```
 
 
 
