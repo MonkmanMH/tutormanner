@@ -94,7 +94,7 @@ gapminder %>%
 
 A key thing to remember is that the factor levels exist separate from your data ... even if you filter the data, the factor levels stay the same unless you drop the extras.
 
-In this example, we see that there are 142 countries in `gapminder` -- and if filter it down to 4, there are still 142 levels associated with `country`.
+In this example, we see that there are 142 countries in `gapminder` -- and if you filter the `gapminder` data down to 4, there are still 142 levels associated with `country`.
 
 Leaving them in can cause problems, for instance when you try to plot them all.
 
@@ -115,7 +115,9 @@ nlevels(h_gap$country)
 
 ### Your turn 2.1
 
-The function we need here is `droplevels()`
+The function we need here is `droplevels()`.
+
+This function will delete the levels that are unused. After you filter the gapminder data table to include just the 4 countries in the `h_countries` list, the `droplevels()` function can be run next in the pipe--the other 138 levels are dropped. 
 
 
 ```{r}
@@ -125,6 +127,8 @@ h_gap <- gapminder %>%
   droplevels()
 
 levels(h_gap$country)
+
+nlevels(h_gap$country)
 
 ```
 
