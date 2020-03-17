@@ -17,6 +17,7 @@ The solutions for the in-class hands-on exercises for [BIDA302](https://github.c
 
 * [lesson 3_2](https://monkmanmh.shinyapps.io/hands-on_3_2_plot_solutions/): introduction to plotting with {ggplot2}
 
+* [lesson_3_3](https://monkmanmh.shinyapps.io/BIDA302_3_3_factor_plot/): factors and plotting—{forcats} and more {ggplot2}
 
 ***
 
