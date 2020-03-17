@@ -27,11 +27,14 @@ library(gapminder)
 h_gap <- readRDS(file = "h_gap.rds")
 h_countries <- readRDS(file = "h_countries.rds")
 
+gapminder_2007 <- readRDS(file = "gapminder_2007.rds")
+
+
 
 ```
 
 
-## Factors
+## 3.3 Factors
 
 * understand how factor type variables differ from character strings
 
@@ -135,6 +138,8 @@ h_countries <- c("Belgium", "India", "Denmark", "Albania")  # see what I did the
 h_gap <- gapminder %>%
   filter(country %in% h_countries)
 
+unique(h_gap$country)
+
 nlevels(h_gap$country)
 
 
@@ -211,11 +216,11 @@ h_gap$country %>%
 Earlier we created a list object of the four countries called "h_countries". Use that list now in the `fct_relevel()` function.
 
 
-```{r factors3_1_2, exercise=TRUE, exercise.eval=FALSE}
+```{r factors3_1_3, exercise=TRUE, exercise.eval=FALSE}
 
 ```
 
-```{r factors3_1_2-solution}
+```{r factors3_1_3-solution}
 
 h_gap$country %>%
   fct_relevel(h_countries) %>% 
@@ -306,6 +311,224 @@ i_gap$country %>%
   levels()
 
 ```
+
+---
+
+## 3.4. Plotting categorical variables
+
+### Objectives
+
+* Produce bar charts and other categorical plots using {ggplot2}.
+
+* Set universal plot settings.
+ 
+* Extend learning of {ggplot2} functions
+
+### References
+
+* https://www.r-graph-gallery.com/267-reorder-a-variable-in-ggplot2.html
+
+* https://stat545.com/factors-boss.html#reorder-factors
+
+
+### Set up the data
+
+
+
+Create a dataframe object with the name "gapminder_2007" by filtering the gapminder data.
+
+```{r}
+
+gapminder_2007 <- filter(gapminder, year == 2007)
+
+```
+
+
+
+## 1. Bar plot: countries in each continent
+
+
+Bar plots are often used to visualize the distribution of a discrete variable. In this case, we will show how many countries there are in each continent.
+
+* the **geom** is `geom_bar`
+
+* map the `x` variable to `continent`
+
+* there is no `y` variable! {ggplot} will count the number of observations in each category
+
+### Your Turn 1.1
+
+
+```{r barplot1_1, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+```{r barplot1_1-solution}
+# solution
+ggplot(gapminder_2007, aes(x = continent)) +
+  geom_bar()
+```
+
+### Your Turn 1.2
+
+Note that `colour` (or `color`) won't work on a bar! That's for points and lines.
+
+For something that occupies a block of space--such as a bar or pie chart--you need to use `fill`.
+
+Add the `fill` attribute to `continent` to the code you wrote above. (Yes, you'll be specifing continent twice!)
+
+```{r barplot1_2, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+```{r barplot1_2-solution}
+# solution
+ggplot(gapminder_2007, aes(x = continent, fill = `continent`)) +
+  geom_bar()
+
+
+```
+
+
+This is the default palette. It might be a bit too vibrant for your eyes...don't worry, we will learn to fix that later.
+
+
+
+
+
+### Your turn 1.3
+
+Another {ggplot2} feature is that every plot is an object. If you want to save a basic version of your plot and continue to tinker with it, you can assign that basic version to an object name, and just add to it.
+
+It would look something like:
+
+`mybar <- ggplot() + geom_()`
+
+Followed by
+
+`mybar + `
+
+
+
+```{r barplot1_3, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+```{r barplot1_3-solution}
+# solution
+
+
+mybar <- ggplot(gapminder_2007, aes(x = continent, fill = `continent`)) +
+  geom_bar()
+
+
+```
+
+
+
+### Your turn 1.4 
+
+
+
+It's possible to turn this on its side, so that the country labels are on the left, and the bars run left-to-right instead of up-and-down.
+
+To do this, add the `coord_flip()` function to the chart object you assigned above (you might have called it `mybar`).
+
+
+
+
+```{r barplot1_4, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+```{r barplot1_4-solution}
+# solution
+
+mybar + coord_flip()
+
+```
+
+
+## 2. Sorting factors in a plot
+
+To sort the factors in a plot, we first mutate the variable that contains the factor variable that will plot.
+
+In this example, we use the same code that we saw in hands-on 3.3, Your Turn 3.2. Other sort functions (such as `fct_relevel`) could also be used. 
+
+```{r barplot2_0, exercise=TRUE, exercise.eval=FALSE}
+
+gapminder %>%
+  # sort the factors
+  mutate(continent = continent %>% 
+           fct_infreq() %>% 
+           fct_rev()) %>% 
+  # then plot
+  ggplot(aes(x = continent)) +
+    geom_bar() +
+  coord_flip()
+
+```
+
+
+### Your turn 2.1
+
+
+In this example, we will plot the four countries in our BIDA group by life expectancy.
+
+```{r barplot2_1_1, exercise=TRUE, exercise.eval=FALSE}
+h_countries <- c("Belgium", "India", "Denmark", "Albania")  # see what I did there?
+
+h_gap <- gapminder %>%
+  filter(country %in% h_countries) %>%
+  mutate(country = country %>% 
+  fct_relevel("Belgium", "India", "Denmark", "Albania"))  
+
+h_gap %>%
+  filter(year == 2007) %>%
+  ggplot(mapping = aes(x = country, y = lifeExp)) +
+  geom_point(size = 6)
+
+```
+
+
+Now it's your turn: sort by life expectancy:
+
+```{r barplot2_1_2, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+```{r barplot2_1_2-solution}
+
+h_gap %>%
+  filter(year == 2007) %>%
+  mutate(country = country %>% 
+           fct_reorder(lifeExp) %>% 
+           fct_rev()) %>% 
+  # now plot
+  ggplot(mapping = aes(x = country, y = lifeExp)) +
+  geom_point(size = 6)
+
+
+```
+
+
+
+
+
+
+### Reference
+
+Some of these examples are lifted directly from http://euclid.psych.yorku.ca/www/psy6135/tutorials/gapminder.html
+
+
+See also
+
+* https://www.r-graph-gallery.com/267-reorder-a-variable-in-ggplot2.html
+
+* https://stat545.com/factors-boss.html#reorder-factors
+
+
+
 
 
 
