@@ -12,13 +12,18 @@ Housing some resources that support the manner of learning R through tutorials, 
 
 The in-class hands-on exercises for [BIDA302](https://github.com/MonkmanMH/UVic_BIDA302)
 
-* [lesson 1](https://monkmanmh.shinyapps.io/BIDA302_1_transform_data/): data manipulation with {dplyr} and {tidyr}
+* [lesson 1](https://github.com/MonkmanMH/tutormanner/tree/master/tutorials/BIDA302/lesson_1): transform data with {dplyr} and {tidyr}
 
-  - [lesson 1 shinyapp](https://monkmanmh.shinyapps.io/BIDA302_1_transform_data/): data manipulation with {dplyr} and {tidyr}
+  - [lesson 1 shiny app](https://monkmanmh.shinyapps.io/BIDA302_1_transform_data/)
+  
+* [lesson 3_2](https://github.com/MonkmanMH/tutormanner/tree/master/tutorials/BIDA302/lesson_3_2): introduction to plotting with {ggplot2}
 
-* [lesson 3_2](https://monkmanmh.shinyapps.io/hands-on_3_2_plot_solutions/): introduction to plotting with {ggplot2}
+  - [lesson 3_2 shiny app](https://monkmanmh.shinyapps.io/hands-on_3_2_plot_solutions/)
 
-* [lesson_3_3](https://monkmanmh.shinyapps.io/BIDA302_3_3_factor_plot/): factors and plotting—{forcats} and more {ggplot2}
+* [lesson_3_3](https://github.com/MonkmanMH/tutormanner/tree/master/tutorials/BIDA302/lesson_3_3): factors and plotting—{forcats} and more {ggplot2}
+
+  - [lesson_3_3 shiny app](https://monkmanmh.shinyapps.io/BIDA302_3_3_factor_plot/)
+
 
 ***
 
