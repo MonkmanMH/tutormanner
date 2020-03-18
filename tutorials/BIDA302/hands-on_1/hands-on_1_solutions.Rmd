@@ -30,9 +30,9 @@ library(gapminder)
 
 When working with data, particularly large data sets, you encounter a situation where you need to: 
 
-* subset the data so that it contains only those records you are interested in (Why deal with every province in Canada when you just need the British Columbia data?)
+* subset the data so that it contains only those records you are interested in (Why deal with a data table that has every province in Canada when you just need the British Columbia data?)
 
-* subset the data so taht it contains only those variables you are interested in (Why keep looking at variables that do not factor into your analysis?)
+* subset the data so that it contains only those variables you are interested in (Why keep looking at variables that do not factor into your analysis, or you will not print in your report?)
 
 * create new variables, often through calculations based on variables in your data
 

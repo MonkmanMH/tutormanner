@@ -1,0 +1,163 @@
+---
+title: "Missing values"
+subtitle: "hands-on examples, with answers"
+output: html_notebook
+---
+
+<!-- This file by Martin Monkman is licensed under a Creative Commons Attribution 4.0 International License. -->
+
+```{r setup}
+library(tidyverse)
+library(gapminder)
+
+```
+
+# 1. Missing Values
+
+
+## a short example
+
+`is.na` and `anyNA(x)` functions are logical
+
+
+## Your Turn 1.1: 
+
+What does `is.na(x)` return? What about `anyNA(x)`?
+
+```{r}
+# example
+x <- c(1, NA, 3)
+
+# answer
+is.na(x)
+# There are three values in `x`, so three tests--only the second one is `NA`
+
+anyNA(x)
+# 
+# One of the three values in `x` is `NA`, so only one TRUE
+
+```
+
+
+
+What if we put an exclamation mark -- the "not" symbol -- in front of `is.na()`? How does it differ from `is.na()`?
+
+```{r}
+!is.na(x)
+```
+
+
+
+Use `na.rm` within the `sum()` function to calculate the sum of `x`
+
+```{r}
+# example
+sum(x)
+
+# answer
+sum(x, na.rm = TRUE)
+
+
+```
+
+
+STOP HERE ...
+
+
+## Your Turn 1.2: 
+
+First step: review the structure of the `mpg` data set:
+
+```{r}
+mpg
+```
+
+
+Run to create the `displ_class_by_cyl` table:
+
+* group the cars by class and cylinder size, and 
+
+* show the mean displacement (engine size)
+
+```{r}
+# summary table - class by cylinder
+displ_class_by_cyl <- mpg %>%
+  group_by(class, cyl) %>%
+  summarise(displ_mean = mean(displ)) %>%
+  arrange(desc(displ_mean)) %>%
+  pivot_wider(names_from = cyl, values_from = displ_mean) %>%
+  pivot_longer(-class, names_to = "cyl", values_to = "displ_mean")
+
+displ_class_by_cyl
+
+```
+
+Calculate the mean of `displ_mean`:
+
+```{r}
+# example
+mean(displ_class_by_cyl$displ_mean)
+
+# solution
+mean(displ_class_by_cyl$displ_mean, na.rm = TRUE)
+
+```
+
+
+An alternative solution: use a filter with `!na` to remove the records with `NA` values:
+
+```{r}
+# example
+displ_class_by_cyl %>%
+  summarise(displ_mean_all = mean(displ_mean))
+
+# solution
+displ_class_by_cyl %>%
+  filter(!is.na(displ_mean)) %>%
+  summarise(displ_mean_all = mean(displ_mean))
+
+```
+
+STOP HERE ...
+
+## Take aways
+
+* using functions to identify unknown values in a variable
+* removing and finding
+
+
+# Summarize with `group()` and `ungroup()`
+
+
+You'll notice in #1.2 that when we summarize `displ_class_by_cyl` it gives the mean values by class, even though we didn't use any grouping variable.
+
+This is because when we ran the code to create the `displ_class_by_cyl` table, we grouped by `class` and `cyl`. Running the `summarise()` function is applied, it removes one level of the grouping (in this case, `cyl`): 
+
+```{r}
+
+# example
+displ_class_by_cyl
+
+displ_class_by_cyl %>%
+  filter(!is.na(displ_mean)) %>%
+  summarise(displ_mean_all = mean(displ_mean))
+
+
+```
+
+
+If you want the mean of all the values, you have to use `ungroup()` before `summarise()`, to "peel off" `class`
+
+
+```{r}
+
+# solution
+displ_class_by_cyl %>%
+  filter(!is.na(displ_mean)) %>%
+  ungroup() %>%
+  summarise(displ_mean_all = mean(displ_mean))
+
+
+```
+
+

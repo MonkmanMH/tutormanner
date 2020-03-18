@@ -1,0 +1,210 @@
+---
+title: "Hands-on excercises - class 2"
+subtitle: "R Markdown, variable types & data import"
+output:
+  html_document:
+    df_print: paged
+---
+
+<!-- This file by Martin Monkman is licensed under a Creative Commons Attribution 4.0 International License. -->
+
+# 1 R Markdown
+
+This document will introduce you to R Markdown notebooks, and give you some hands-on experience adding to the document.
+
+### Getting started
+
+You can create a new R Markdown document in RStudio by clicking the menu item:
+
+* File / New File >  R Notebook
+
+_or_
+
+* File / New File >  R Markdown...
+
+
+For this course, we will be using the Notebook option...for your project, you may wish to use another format.
+
+### Typing, running, and knitting
+
+When you type in an R Markdown document, you just get what you type.
+
+The magic starts to happen when you run R code chunks in the document...we will get to that soon.
+
+And the real whiz-bang thing is that when you've finished, you can "knit" the document. At that point, the code chunks are run, and the markdown formatting is interpreted, and you get a beautiful document.
+
+***
+
+## 1 Markdown syntax
+
+Markdown is a great way to write a report, slide deck, book, ... even hands-on exercises for a class!
+
+Formatting is simple. Check the cheatsheet for some details, or this section of _R for Data Science:
+https://r4ds.had.co.nz/r-markdown.html#text-formatting-with-markdown
+
+
+
+## Your Turn 1.1
+Write something that you want bolded:
+
+
+
+Now, make a bullet list with the names of three colours:
+
+
+
+
+## Your Turn 1.2
+
+Add a hypertext link to the text book's title: Hadley Wickham and Garrett Grolemund, [_R for Data Science_.](https://r4ds.had.co.nz/)
+
+
+Add an image of the data science process...the file is "data-science.png"
+
+![The data science process](data-science.png)
+
+
+
+STOP HERE ...
+
+***
+
+
+# 2. The first chunk
+
+It's good practice to load all of the packages you'll require at the top of your script. When a package is loaded, all of the functions and data in the package are available.
+
+Loading an installed package is done with the `library()` function. The R chunk below, called "setup", will load the {tidyverse} package (which in turn will load other packages, such as the data manipulation package {dplyr} and the plotting package {ggplot2}). 
+
+To run a chunk, press the green arrow at the far right of the chunk, or put your cursor in the chunk and press `Ctrl + Shift + Enter` (on macOS, `Cmd + Shift + Enter`) 
+
+
+## Your Turn 2.1
+
+Add the package {beepr} to the setup chunk, and run the chunk.
+
+```{r setup}
+library(tidyverse)
+# solution
+library(beepr)
+```
+
+
+## Your Turn 2.2
+
+Add a new chunk to the R Markdown document.
+
+You can do this with the "Insert" toolbar button, or the keyboard shortcut 
+
+* `Ctrl + Alt + I` 
+
+* `Cmd + Option + I` on macOS
+
+You could also type the three back ticks, the curly braces, the letter R, and three more backticks to end the chunk--but that's a very WET approach!
+
+
+## Your Turn 2.3
+
+In that chunk, put the function `beep()` and run it...
+
+Any Zelda fans? Try `beep("treasure)`!  You can find out the full range by typing ?beep into the console...
+
+
+```{r}
+# solution
+beep()
+```
+Enough of that silliness...onward!
+
+***
+
+# 3. Chunk contents
+
+Code chunks can create an object, which is stored in the Global Environment...it will be listed under the "Environment" tab in the top right of your RStudio screen.
+
+That object can then be referenced in a future chunk. This can be very useful!
+
+## Your Turn 3.1
+
+Use the `seq()` function to create an object "my_numbers" that contains the integers from 3 to 7.
+
+If you're not sure about the syntax of the function, don't hesitate to use the ?seq command in the console...
+
+
+```{r three_to_seven}
+# solution
+my_list <- seq(3, 7)
+```
+Now, use the next chunk to calculate the sum of the numbers in `my_list`. Assign it to an object `my_total`, and print the total.
+
+
+```{r}
+#solution
+my_total <- sum(my_list)
+my_total
+```
+
+## Your Turn 3.2
+
+R code chunks can contain anything you want to do in R.
+
+Here's a chunk that contains code to create a chart from everyone's favourite data set, `mpg`
+
+Run the chunk and see what happens...
+
+
+```{r}
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy))
+```
+
+***
+
+# 4. Inline R code
+
+R Markdown allows you to insert a calculated value into the middle of your text. This is accomplished by putting a single backtick followed by the letter "r" (lower case, with no space after the backtick) and then your code, and ended with another backtick.
+
+Here's an example. 
+
+The area of a circle with a radius of 3 mm is `r pi * 3^2` sq. mm.
+
+When this is rendered (as we will later) this code chunk will be evaluated, and the result inserted into the text.
+
+
+### Your Turn 4.1
+Now is your chance to get fancy: write a sentence that uses inline code and the function `sqrt` to calculate the square root of `my_total`, which you calculated before.
+
+
+***
+
+# 5. Rendering the HTML file
+
+At this point, we want to knit it all together.
+
+
+## Your Turn 5.1 - rendering the HTML file
+
+Below is that chunk from 2.2 that creates a chart. When we are rendering the final document, we might not want to have the code displayed (it might be a fancy report for your boss's boss) -- we just want the chart.
+
+The solution is to use one of many code chunk options that are available. These options control how the chunk is interpreted...you can leave the code visible but not run at all, or to omit rendering any messages that might clutter your output.
+
+
+```{r}
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy))
+```
+The solution is to put the option "echo = FALSE" after the "r" in the opening bit of the code.
+
+
+## REFERENCE MATERIAL
+
+You can find more details in _R for Data Science_:
+https://r4ds.had.co.nz/r-markdown.html
+
+
+You can find more code chunk options described here:
+https://bookdown.org/yihui/rmarkdown/r-code.html
+
+There's also a short listing of them in the R Markdown cheatsheet and reference guide, available online and through the "Help / Cheatsheets >" menu item in RStudio
+
+

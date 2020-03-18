@@ -1,0 +1,207 @@
+---
+title: "Import data"
+output: html_notebook
+---
+
+<!-- This file by Martin Monkman is licensed under a Creative Commons Attribution 4.0 International License. 
+Some of it comes straight from Hadley Wickham & Garrett Grolemund's book _R for Data Science_, found online here: https://r4ds.had.co.nz/
+It uses great swaths of content from the tidyverse reference material for {readr} and {readxl}, by RStudio. 
+You can find that material here: 
+https://readr.tidyverse.org/index.html 
+https://readxl.tidyverse.org/index.html
+-->
+
+
+# Getting started
+
+Run this code chunk:
+
+```{r}
+library(tidyverse)  # we will be using the functions of {readr}
+library(readxl)
+```
+
+
+
+# 1. Reading a CSV file
+
+CSV files are very commonly used for storing flat files. They don't have any formatting--just the number or text in the cell.
+
+The package {readr} is designed to make importing these files simple.
+
+
+(This example comes straight from https://readr.tidyverse.org/index.html)
+
+Run this chunk to create an object called `mtcars`, from a CSV file of the same name.
+
+```{r}
+# example
+mtcars <- read_csv("mtcars.csv")
+
+```
+
+Adding the `cols()` allows us to alter what {readr} has decided for us. For example, we could set the `cyl` variable to be an integer.
+
+```{r}
+# example
+read_csv("mtcars.csv", 
+         col_types = 
+           cols(cyl = col_integer())
+)
+
+```
+
+
+## Your Turn 1.1
+
+Insert an R chunk and rerun the example above, but with the `am` and `gear` variables also set to integer.
+
+```{r}
+# solution
+read_csv("mtcars.csv",
+         col_types = 
+           cols(cyl = col_integer(),
+                am = col_integer(),
+                gear = col_integer())
+)
+
+```
+
+
+
+
+The {readr} package allows a lot of control over how the file is read. Of particular utility are 
+
+* `na = ""` -- specify which values you want to be turned into `NA`
+
+* `skip = 0` -- specify how many rows to skip 
+
+* `n_max = Inf` -- the maximum number of records to read
+
+
+## Your Turn 1.2
+
+Read the first 5 rows of the "mtcars.csv" file.
+
+```{r}
+# solution
+read_csv("mtcars.csv", 
+         n_max = 5)
+
+
+
+```
+
+
+
+
+STOP HERE ...
+
+
+# 2. Reading an Excel file
+
+If anything, Excel files are more common than CSV and other plain-text data files. They seem to multiply like coat hangers in the closet...
+
+And as we see in the article by Karl Broman & Kara Woo, ["Data Organization in Spreadsheets"](https://www.tandfonline.com/doi/full/10.1080/00031305.2017.1375989), they can encourage some ways of storing information that makes it hard for us to analyze. Excel files can also contain a wide variety of data format types. {readxl} tries to figure out what's going on, but like {readr}, it allows you to override some of those automatic decisions.
+
+
+```{r}
+deaths <- read_excel("deaths.xlsx")
+deaths
+```
+
+What do you notice about the "Date of birth" and "Date of death" columns?
+
+
+## Your Turn 2.1
+
+Read in the "deaths" file, but use the `range = ` option to specify when to start reading the file:
+
+
+```{r}
+# Example
+deaths <- read_excel("deaths.xlsx", 
+                     range = "A1:B3")
+
+deaths
+
+# solution
+deaths <- read_excel(
+  "deaths.xlsx",
+  range = "A5:F15"
+)
+
+deaths
+
+```
+
+
+Use the `skip =` and `n_max =` options to achieve the same thing:
+
+```{r}
+
+# solution
+deaths <- read_excel(
+  readxl_example("deaths.xlsx"),
+  skip = 4,
+  n_max = 10
+)
+
+deaths
+
+
+```
+
+
+## Your Turn 2.2
+
+Excel files often (almost always?) have multiple sheets in them. It's possible to specify which one you want to use with the `sheets = ""` option. You can also use the position number (if you happen to know it). 
+
+Note that if you don't specify the sheet, {readxl} will default to the first one.
+
+The `excel_sheets()` function will tell you the name of the sheets in an Excel file.
+
+```{r}
+datasets <- "datasets.xlsx"
+
+excel_sheets(datasets)
+
+# Example
+read_excel(datasets, "iris")
+
+```
+
+Now, read in the "mtcars" sheet using the name of the sheet.
+
+
+```{r}
+
+# Solution
+read_excel(datasets, "mtcars")
+
+```
+
+And finally, read in the "quakes" sheet, using the position.
+
+```{r}
+# Solution
+read_excel(datasets, 4)
+
+```
+
+
+
+
+## REFERENCE MATERIAL
+
+You can find more details in _R for Data Science_:
+https://r4ds.had.co.nz/data-import.html
+
+
+{readr} 
+https://readr.tidyverse.org/
+
+{readxl}
+https://readxl.tidyverse.org/index.html
+
+
