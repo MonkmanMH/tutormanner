@@ -1,0 +1,241 @@
+---
+title: "R multiple choice questions"
+author: "Martin Monkman"
+date: "20/03/2020"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+
+
+<!-- 
+
+This file by Martin Monkman is licensed under a Creative Commons Attribution 4.0 International License. 
+
+Original sources are noted.
+
+-->
+
+This file contains a variety of multiple choice questions, formatted for {learnr} tutorials.
+
+The original sources are noted at the top of each section.
+
+
+```{r setup, include=FALSE}
+library(learnr)
+knitr::opts_chunk$set(echo = FALSE)
+
+# packages used in the tutorial
+library(tidyverse)
+library(gapminder)
+
+```
+
+An assortment of R-oriented multiple choice questions, suitable for {learnr} tutorials
+
+## Base R
+
+
+### data-flair
+
+Modified from https://data-flair.training/blogs/r-programming-quiz-part-1/
+
+```{r base_01}
+quiz(
+  question("Which function is used to create a vector with more than one element?",
+    answer("`library()`"),
+    answer("`plot()`"),
+    answer("`c()`", correct = TRUE),
+    answer("`seq()`")
+  )
+)
+```
+
+
+
+```{r base_02}
+quiz(
+  question("Which of the following statements returns the maximum value of `x`, excluding missing values?",
+    answer("`rm(x)`"),
+    answer("`max(x, na.rm=TRUE)`", correct = TRUE),
+    answer("`all(x)`"),
+    answer("`x %in% y`")
+  )
+)
+```
+
+```{r base_03}
+quiz(
+  question("R version 1.0.0 was released on which date?",
+    answer("1999-12-31"),
+    answer("2000-02-29", correct = TRUE),
+    answer("2001-01-01"),
+    answer("2010-10-10")
+  )
+)
+```
+
+
+```{r base_04}
+quiz(
+  question("Attributes of an object (if any) can be accessed using the ______ function.",
+    answer("`objects()`"), 
+    answer("`attributes()`", correct = TRUE),
+    answer("`att()`"),
+    answer("`fun`()")
+  )
+)
+```
+
+
+```{r base_05}
+quiz(
+  question("Which function would you use to return the names of the objects in the specified enviroment?",
+    answer("`list()`"), 
+    answer("`ls()`", correct = TRUE),
+    answer("`names()`"),
+    answer("`fun`()")
+  )
+)
+```
+
+
+
+
+
+```{r base_06}
+
+quiz(
+  question("What would be the output of the following code?  <br>
+           `x <- 1:4` <br>
+           `y <- 6:9` <br>
+           `z <- x + y` <br>
+           `z`",
+    answer("7 9 11 13", correct = TRUE), 
+    answer("7 9 11 13 14"),
+    answer("9 11 13"),
+    answer("NA")
+  ),
+  question("What would be the output of the following code?  <br>
+           `x <- 1:4` <br>
+           `y <- c(6, 7, 8, 9)` <br>
+           `z <- x + y` <br>
+           `z`",
+    answer("7 9 11 13", correct = TRUE), 
+    answer("7 9 11 13 14"),
+    answer("9 11 13"),
+    answer("NA")
+  ),
+  question("What would be the output of the following code?  <br>
+           `x <- 1:4` <br>
+           `y <- c(6, 7, NA, 9)` <br>
+           `z <- x + y` <br>
+           `z`",
+    answer("7 9 11 13"), 
+    answer("7 9 11 13 14"),
+    answer("7 9 NA 13", correct = TRUE),
+    answer("NA")
+  )
+  
+)
+```
+
+
+
+Dealing with NAs
+
+```{r base_07}
+
+quiz(
+  question("What would be the output of the following code?  <br>
+           `x <- c(1, 2, 3)` <br>
+           `sum(x)`",
+    answer("1 2 3"), 
+    answer("123"),
+    answer("6", correct = TRUE),
+    answer("NA")
+  ),
+  question("What would be the output of the following code?  <br>
+           `x <- c(1, 2, 3, NA` <br>
+           `sum(x)`",
+    answer("1 2 3 NA"), 
+    answer("123NA"),
+    answer("6"),
+    answer("NA", correct = TRUE)
+  ),
+  question("What would be the output of the following code?  <br>
+           `x <- c(1, 2, 3, NA` <br>
+           `sum(x, na.rm = TRUE)`",
+    answer("1 2 NA 4"), 
+    answer("12NA4"),
+    answer("6", correct = TRUE),
+    answer("NA")
+  )
+)
+```
+
+
+
+Boolean operators
+
+```{r base_07}
+
+quiz(
+  question("What would be the output of the following code?  <br>
+           `x <- 1:4` <br>
+           `x > 2`",
+    answer("FALSE FALSE TRUE TRUE", correct = TRUE), 
+    answer("FALSE TRUE TRUE TRUE"), 
+    answer("FALSE"), 
+    answer("TRUE"), 
+    answer("NA")
+  ),
+  question("What would be the output of the following code?  <br>
+           `x <- 1:4` <br>
+           `x < 2`",
+    answer("TRUE TRUE FALSE FALSE"), 
+    answer("TRUE FALSE FALSE FALSE", correct = TRUE), 
+    answer("FALSE"), 
+    answer("TRUE"), 
+    answer("NA")
+  )
+  
+)
+```
+
+
+Q.26 What would be the output of the following code?
+
+> x <- 1:4
+
+> x > 2
+FALSE FALSE TRUE TRUE
+1 2 3 4
+1 2 3 4 5
+
+
+
+
+Next:
+
+https://gist.github.com/peterhurford/010899c596862805dece
+
+
+
+## tidyverse
+
+### dplyr
+
+Q.23 Which of the following sort dataframe by the order of the elements in B
+a.x[rev(order(x$B)),]
+b.x[ordersort(x$B),]
+c.x[order(x$B),]
+
+
+Modified from: https://study.com/academy/practice/quiz-worksheet-tidyverse-in-r-programming.html
+
+
+Modified from: https://www.r-bloggers.com/test-your-tidyness-a-short-quiz-to-check-your-tidyverse-capabilities/
+
+
+
