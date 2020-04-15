@@ -19,6 +19,18 @@ The in-class hands-on exercises for [BIDA302](https://github.com/MonkmanMH/UVic_
 * [lesson_3_3](https://github.com/MonkmanMH/tutormanner/tree/master/tutorials/BIDA302/lesson_3_3): factors and plotting—{forcats} and more {ggplot2}
 
 
+
+### Data Carpentry "R for Social Scientists"
+
+Tutorial versions of the sections of [R for Social Scientists](https://datacarpentry.org/r-socialsci/)
+
+* [Section 4. Introducing dplyr and tidyr](https://datacarpentry.org/r-socialsci/03-dplyr-tidyr/index.html)
+
+  - [GitHub repo](https://github.com/MonkmanMH/tutormanner/tree/master/tutorials/r-socialsci)
+  
+  - [Shiny app](https://monkmanmh.shinyapps.io/R4SS_data_manipulation/#section-data-manipulation-using-dplyr-and-tidyr)
+
+
 ***
 
 ## {learnr}

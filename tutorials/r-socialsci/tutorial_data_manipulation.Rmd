@@ -1,5 +1,6 @@
 ---
 title: "Tutorial: data manipulation"
+subtitle: Data Carpentry "R for Social Scientists"
 output: learnr::tutorial
 runtime: shiny_prerendered
 ---
@@ -35,14 +36,14 @@ interviews_months_lack_food <- readRDS(file = "data/interviews_months_lack_food.
      "R for Social Scientists" https://datacarpentry.org/r-socialsci/
      Licensed under CC-BY 4.0 2018–2020 by The Carpentries (https://carpentries.org/)
      
-     Modifications are licensesd under CC-BY 4.0 by Martin Monkman 
+     Modifications are licensed under CC-BY 4.0 by Martin Monkman 
 
 -->
 
 
 
-
 ## Data Manipulation using **`dplyr`** and **`tidyr`**
+
 
 **`dplyr`** is a package for making tabular data manipulation easier by using a limited set of functions that can be combined to extract and summarize insights from your data. It pairs nicely with **`tidyr`** which enables you to swiftly convert between different data formats (long vs. wide) for plotting and analysis.
 
@@ -777,3 +778,17 @@ interviews_months_lack_food %>%
   summarize(mean_months = mean(number_months))
 
 ```
+
+
+## References and other resources
+
+This tutorial is a modification of the material developed by the Data Carpentries lesson
+["R for Social Scientists"](https://datacarpentry.org/r-socialsci/)
+
+
+The source code for this tutorial can be found on GitHub at the [tutormanner repository](https://github.com/MonkmanMH/tutormanner/tree/master/tutorials/r-socialsci)
+
+
+
+
+
