@@ -49,3 +49,12 @@ The tutorials are build using the package {learnr}
 * [Introducing learnr](https://blog.rstudio.com/2017/07/11/introducing-learnr/), Garrett Grolemund, 2017-07-11
 
 
+***
+
+## Jumping from the tutorials into your own data
+
+It might feel like this...
+
+https://twitter.com/beeonaposy/status/1281301404418703364?s=20
+
+
