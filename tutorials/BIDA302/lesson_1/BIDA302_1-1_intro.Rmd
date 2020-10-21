@@ -1,0 +1,162 @@
+---
+title: "BIDA302: Introduction to R"
+subtitle: "hands-on examples, with answers"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+
+
+<!-- 
+This file by Martin Monkman is licensed under a Creative Commons Attribution 4.0 International License
+
+The tables of functions and operators are from Gina Reynolds, [Tidyverse in Action](https://github.com/EvaMaeRey/tidyverse_in_action)
+-->
+
+
+```{r setup, include=FALSE}
+library(learnr)
+knitr::opts_chunk$set(echo = FALSE)
+
+# packages used in the tutorial
+library(tidyverse)
+library(gapminder)
+
+```
+
+## Objectives
+
+At the end of this tutorial, you will have:
+
+* An understanding of and ability to use mathematical and assignment operators in R
+
+* The ability to use basic statistical functions in R
+
+
+## R as a calculator
+
+In the code window below, type `10 + 4`, then press the "Run Code" button:
+
+```{r calculator_example, exercise=TRUE, exercise.eval=FALSE}
+
+
+
+```
+
+
+
+### other operators
+
+In addition to these functions, R has a number of operators that add significantly to your code.
+
+**Arithmetic operators**
+
+| Operator | Description |
+| :--- | :--- |
+| + | *plus* |
+| - | *minus* |
+| \* | *multiplication*  |
+| / | *division* |
+| ^ | *exponential* |
+| \>    | *greater than, tests greater than* (also `>=`) |
+| <     | *less than, tests less than* (also `<=`) |
+
+<P>
+
+
+## Your Turn 1.1: math
+
+Try some other math in the code window below:
+
+```{r calculator_freeform, exercise=TRUE, exercise.eval=FALSE}
+
+
+
+```
+
+
+
+## The power of named variables 
+
+In R, as in other programming languages, various things get called _objects_ which can be named. Those names can then be written to use those named objects again. 
+
+### the assignment arrow
+
+In R, we use an assignment arrow to create a named object.
+
+`<-`
+
+> type "less than" plus hyphen
+
+
+You can read it as:
+
+`new_thing <- old_thing`
+
+
+In the example below, we will create an object "x" with the value 10. The object is then part of the R environment, and can be used later. 
+
+
+To show `x` in the console, we type `x`
+
+```{r assignment-1-x, exercise=TRUE, exercise.eval=FALSE}
+
+x <- 10
+
+x
+
+```
+
+
+## Your Turn 1.2: naming objects
+
+Create a new object "y" with the value 4
+
+```{r assignment-2-y, exercise=TRUE, exercise.eval=FALSE, exercise.setup = "assignment-1-x}
+
+
+```
+
+
+```{r assignment-2-y-solution}
+# answer
+y <- 4
+
+y
+
+```
+
+
+> Now add x and y
+
+```{r assignment_3_xy, exercise=TRUE, exercise.eval=FALSE, exercise.setup = "assignment_2_y"}
+
+x + y
+
+```
+
+
+
+How would you set `x` equal to 20?
+
+One solution:
+
+`x <- 20`
+
+
+Another solution: since we earlier assigned `x` a value of 10
+
+`x <- x * 2`
+
+
+
+And now divide `x` by `y`
+
+`x / y`
+
+
+`t <- "If it's inside quotation marks, it's a character"`
+
+
+Now print the object `t`
+
