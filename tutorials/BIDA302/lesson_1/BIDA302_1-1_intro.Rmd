@@ -16,6 +16,8 @@ The tables of functions and operators are from Gina Reynolds, [Tidyverse in Acti
 
 ```{r setup, include=FALSE}
 library(learnr)
+tutorial_options(exercise.completion = FALSE)
+
 knitr::opts_chunk$set(echo = FALSE)
 
 # packages used in the tutorial
@@ -66,10 +68,18 @@ In addition to these functions, R has a number of operators that add significant
 
 ### Your Turn A-1: math
 
-Try some other math in the code window below:
+Try some other math in the code window below.
+
+*Notes:* 
+
+* You can put multiple equations, each separate math equation needs to be on its own line.
+
+* You can leave lines blank—some white space will make your code easier to read.
+
+* If you want to add an explanation about what your code is doing, you can add a comment that won't be "interpreted" as instructions by starting the line with a `#` symbol
 
 ```{r A1_yt, exercise=TRUE, exercise.eval=FALSE}
-
+# This is my math experiment
 
 
 ```
@@ -199,6 +209,7 @@ Once you have your code written, run the chunk.
 ```
 
 
+
 ```{r B2-1_yt-solution}
 # answer
 x <- 12
@@ -207,8 +218,11 @@ z <- 7
 
 x/y
 
+# The result is 4
+
 x/z
 
+# The result is 1.714286
 ```
 
 
@@ -245,6 +259,10 @@ not_a_number + x
 
 The earlier examples have a single value in each object. Most data analysis is the summarization of multiple values—means, medians, correlations, and advanced machine learning methods are all approaches that take multiple values as inputs.
 
+In R, a function's syntax looks like this:
+
+`function_name(variable, perhaps_an_argument)`
+
 In R, one way to create one type of list (technically, an atomic vector) of numbers is using the `c()` function ("c" for "combine"). Here's the code to create a list of numbers:
 
 
@@ -278,10 +296,10 @@ Some basic statistical functions
 
 **Two-variable statistical functions**
 
-| Operator | Description |
+| Function | Description |
 | :--- | :--- |
 | `min()` <br> `max()` | *minimum and maximum values* |
-| `mean() <br> `median()` <br> `mode()` | *measures of "average"* |
+| `mean()` <br> `median()` <br> `mode()` | *measures of "average"* |
 | `sum()`  | *adds up the values* |
 | `sd()`  | *calculates the standard deviation* |
 | `var()`  | *calculates the variance* |
@@ -419,7 +437,7 @@ Earlier we saw functions that calculate summary statistics on a single variable,
 
 **Two-variable statistical functions**
 
-| Operator | Description |
+| Function | Description |
 | :--- | :--- |
 | `cor(x, y)`  | *calculate the correlation between x and y* |
 | `cov(x, y)`  | *calculate the covariance between x and y* |
