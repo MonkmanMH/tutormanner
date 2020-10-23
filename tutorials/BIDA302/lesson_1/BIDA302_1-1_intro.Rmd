@@ -243,7 +243,7 @@ hello_world <- "Hello, world"
 
 ```
 
-Note that if we put a number inside quotation marks, it's now a character string—without quotation marks, it is a number. If we try to use a charcater string that looks like a number in a math equation, R throws an error:
+Note that if we put a number inside quotation marks, it's now a character string—without quotation marks, it is a number. If we try to use a character string that looks like a number in a math equation, R throws an error:
 
 ```{r C2_yt, exercise=TRUE, exercise.eval=FALSE}
 
