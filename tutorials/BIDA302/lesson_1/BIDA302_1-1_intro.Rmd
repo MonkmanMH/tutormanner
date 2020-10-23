@@ -407,7 +407,7 @@ mean(anscombe_1$x1)
 
 ### Your Turn E.1: functions on data frames
 
-Write the script to calculate:
+Using the `anscombe_1` data frame, write the script to calculate:
 
 * the minimum value of `x1`
 
@@ -456,7 +456,7 @@ And again, the statistical/data science foundation of R means that these and man
 
 ### Your Turn E.2: functions on two variables
 
-Write the script to calculate:
+Using the `anscombe_1` data frame, write the script to calculate:
 
 * the correlation between `x1` and `y1`
 
