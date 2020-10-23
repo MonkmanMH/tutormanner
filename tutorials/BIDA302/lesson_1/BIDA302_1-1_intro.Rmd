@@ -243,17 +243,19 @@ hello_world <- "Hello, world"
 
 ```
 
-Note that if we put a number inside quotation marks, it's now a character string. If we try to use it like a number, R throws an error:
+Note that if we put a number inside quotation marks, it's now a character string—without quotation marks, it is a number. If we try to use a charcater string that looks like a number in a math equation, R throws an error:
 
 ```{r C2_yt, exercise=TRUE, exercise.eval=FALSE}
 
+a_number <- 10
+
 not_a_number <- "10"
 
-x <- 10
-
-not_a_number + x 
+a_number + not_a_number
 
 ```
+
+
 
 ## D. Lists & functions
 
@@ -392,7 +394,7 @@ We can calculate the mean value of `x1` using the following code. The elements i
 
 `function(dataframe$variable)`
 
-Note that the dollar sign separates the dataframe from the variable in that dataframe. (Later in the course we will see other ways to write the same code.)
+Note that the dollar sign separates the data frame name from the variable in that data frame. (Later in the course we will see other ways to write the same code.)
 
 
 ```{r E1-2, exercise=TRUE, exercise.setup = "E1"}
@@ -424,7 +426,12 @@ Write the script to calculate:
 
 min(anscombe_1$x1)
 
+# answer: 4
+
 median(anscombe_1$y1)
+
+# answer: 7.58
+
 
 ```
 
@@ -465,6 +472,8 @@ Write the script to calculate:
 # answer
 
 cor(anscombe_1$x1, anscombe_1$y1)
+
+# answer: 0.8164205
 
 ```
 
