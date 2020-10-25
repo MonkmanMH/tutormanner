@@ -24,15 +24,15 @@ library(gapminder)
 
 ```
 
-## Transform Data 1: manipulate cases
+## Transform Data 1a: manipulate cases
 
 > Please refer to [_R for Data Science_, Data transformation](https://r4ds.had.co.nz/transform.html) for more information about this section.
 
 When working with data, particularly large data sets, you encounter a situation where you need to: 
 
-* subset the data so that it contains only those records you are interested in (Why deal with a data table that has every province in Canada when you just need the British Columbia data?)
+* subset the data so that it contains only those _records_ (rows) you are interested in (Why deal with a data table that has every province in Canada when you just need the British Columbia data?)
 
-* subset the data so that it contains only those variables you are interested in (Why keep looking at variables that do not factor into your analysis, or you will not print in your report?)
+* subset the data so that it contains only those _variables_ (columns) you are interested in (Why keep looking at variables that do not factor into your analysis, or you will not print in your report?)
 
 * create new variables, often through calculations based on variables in your data
 
@@ -83,8 +83,8 @@ Boolean operators can be combined with *and* or *or*.
 
 | Operator | Description |
 | :--- | :--- |
-| `&`     | *and, returns true if preceeding and following are both true, else false* |
-| &#124;  | *or, returns true if either preceeding and following are true, else false* |
+| `&`     | *and, returns true if preceding and following are both true, else false* |
+| &#124;  | *or, returns true if either preceding and following are true, else false* |
 
 
 * see [_R for Data Science_, "Comparisions""](https://r4ds.had.co.nz/transform.html#comparisons) and ["Logical Operators"](https://r4ds.had.co.nz/transform.html#logical-operators).]
@@ -111,7 +111,7 @@ The `filter()` function allows us to specify the observations (records) that we 
 
 The general structure of a `filter()` function is:
 
-`filter(data, variable <test> "value")`
+`filter(.data, variable <test> value)`
 
 
 See if you can use the logical operators to manipulate our code below to show:
@@ -132,7 +132,7 @@ filter(gapminder, country == "Canada")
 
 
 
-* All data for countries in Oceania
+* All data for countries in the continent of Oceania
 
 ```{r filter2_example, exercise=TRUE, exercise.eval=FALSE}
 # example
@@ -180,7 +180,7 @@ For example, we could write
 
 If we want to do anything with the first statement, we have to assign it to an intermediate object, and then use that object in the second statement. With the pipe, we can simply add another pipe and the results of the first function are passed to the second statement.
 
-As we get to more and more complex statements, the power of this will become more evident.
+As we get to increasingly complex statements, the power of this will become more evident.
 
 ***
 
@@ -226,19 +226,41 @@ gapminder %>%
 ```
 
 
+### Creating lists
 
-* Create a list object and return records for any of "New Zealand", "Canada" or "United States"
+R allows us to create lists using the `c()` function.
 
+A list can be referenced in a `filter()` statement using the `%in%` as the evaluator.
 
-```{r filter6_example, exercise=TRUE, exercise.eval=FALSE}
+In this example, we filter to get three countries, "New Zealand", "Canada", and "United States".
+
+Note that to get all three, the statement is _OR_, not _AND_! There are no cases where `country == "New Zealand"` and simultaneously `country == "Canada"` ... 
+
+```{r filter6a_example, exercise=TRUE, exercise.eval=FALSE}
+
+gapminder %>% 
+  filter(country == "New Zealand" |
+           country == "Canada" |
+           country == "United States")
 
 ```
 
+Instead of this rather verbose syntax, we can achieve the same result by creating a list. 
 
-```{r filter6_example-solution}
+
+```{r filter6b_example, exercise=TRUE, exercise.eval=FALSE}
+
 # answer
 gapminder %>%
   filter(country %in% c("New Zealand", "Canada", "United States"))
+
+```
+
+Another option would be to create a named object that contains our list, and then use the named object in our `filter()`
+
+
+```{r filter7a_example, exercise=TRUE, exercise.eval=FALSE}
+
   
 # alternate answer
 country_list <- c("New Zealand", "Canada", "United States")   # create object that is list of countries
@@ -249,7 +271,31 @@ gapminder %>%
 
 ```
 
-* Return records for all continents except Europe
+
+
+* Create a list object and return records for any of "Belgium", "India", "Denmark" or "Angola" 
+
+
+```{r filter6_example, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+
+```{r filter6_example-solution}
+# answer
+gapminder %>%
+  filter(country %in% c("Belgium", "India", "Denmark", "Angola"))
+  
+# alternate answer
+country_list <- c("Belgium", "India", "Denmark", "Angola")   # create object that is list of countries
+
+gapminder %>%
+  filter(country %in% country_list)                           # filter uses that object 
+  
+
+```
+
+* Return the records for all continents except Europe
 
 ```{r filter7_example, exercise=TRUE, exercise.eval=FALSE}
 
@@ -308,6 +354,8 @@ gapminder %>% arrange(-gdpPercap)
 
 
 ```
+
+
 
 
 ## Your Turn 1.4: creating new variables
@@ -397,13 +445,88 @@ quiz(
 * Make new variables, with `mutate()`  
 * Connect operations with `%>%`  
 
-***
+
+
+
+
+## Transform data 1b: select()
+
+<!-- This file by Martin Monkman is licensed under a Creative Commons Attribution 4.0 International License -->
+
+
+
+## Your Turn 1.6
+
+{gapminder} again
+
+
+Using `select()` to reduce the number of variables to `country`, `year`, and `lifeExp`:
+
+```{r yourturn4_1_1, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+
+```{r yourturn4_1_1-solution}
+# answer
+gapminder %>%                                
+  select(country, year, lifeExp) 
+
+```
+
+
+
+You can use the minus sign to drop variable--that is, to define ones to _not_ select. 
+
+In this example, note we can use `c()` to create a list:
+
+
+```{r yourturn4_1_2, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+
+```{r yourturn4_1_2-solution}
+# answer
+gapminder %>%                                
+  select(-(c(continent, pop, gdpPercap))) 
+
+# alternate answer
+gapminder %>%                                
+  select(-continent, -pop, -gdpPercap) 
+
+```
+
+
+
+You can also define a range of columns to select by using the `:`
+
+```{r yourturn4_1_3, exercise=TRUE, exercise.eval=FALSE}
+# answer
+gapminder %>%
+  select(country, year:pop)
+```
+
+
+## Take aways
+
+* Restructure data frames with `select()` 
+* Different ways to define what variables are selected by `select()`
+* Reinforce other data transformation functions
+
+
+
+
+
 
 ## Transform Data 2: summarize
 
 <!-- This file by Charlotte Wickham (with some modifications by Martin Monkman) is licensed under a Creative Commons Attribution 4.0 International License, adapted from the orignal work at https://github.com/rstudio/master-the-tidyverse by RStudio. -->
 
-To achieve these three goals, we will be using functions from the tidyverse package {dplyr}. The functions are verbs that describe what they do. Here's a list of the {dplyr} functions that you'll be using:
+When working with data, one of the first things in our analysis is often the calculation of summary statistics. We may want the number of cases, or the maximum value, or the mean of all the records. 
+
+Here's a list of the {dplyr} functions that you'll be using:
+
 
 
 |function |action |
@@ -425,7 +548,7 @@ gapminder
 
 ## Your Turn 2.1
 
-Use summarise() to compute three statistics about the data:
+Use `summarise()` to compute three statistics about the data:
 
 * The first (minimum) year in the dataset
 * The last (maximum) year in the dataset
@@ -550,6 +673,17 @@ Pivoting the data in your file can be very helpful in your analysis. It's partic
 You might also want to pivot the data to make it more human readable (a more compact layout that's easily scanned) or machine readable.
 
 See [_R for Data Science_, Tidy data: Pivoting](https://r4ds.had.co.nz/tidy-data.html#pivoting)
+
+
+The functions to pivot your data table are in the package {tidyr}.
+
+
+|function |action |
+| :--- | :--- |
+| **{tidyr}  | - |
+| `pivot_wider()` | Pivot data from long to wide |
+| `pivot_longer()` | Pivot data from wide to long |
+
 
 
 ## Your Turn 3.1
@@ -745,79 +879,16 @@ gapminder %>%
 * Restructure data tabulations with `pivot_wider()` and `pivot_longer`  
 
 
-***
 
-## Transform data 4: select()
-
-<!-- This file by Martin Monkman is licensed under a Creative Commons Attribution 4.0 International License -->
+## Complete list of functions
 
 
-
-## Your Turn 4.1
-
-{gapminder} again
-
-
-Using `select()` to reduce the number of variables to `country`, `year`, and `lifeExp`:
-
-```{r yourturn4_1_1, exercise=TRUE, exercise.eval=FALSE}
-
-```
-
-
-```{r yourturn4_1_1-solution}
-# answer
-gapminder %>%                                
-  select(country, year, lifeExp) 
-
-```
-
-
-
-You can use the minus sign to drop variable--that is, to define ones to _not_ select. 
-
-In this example, note we can use `c()` to create a list:
-
-
-```{r yourturn4_1_2, exercise=TRUE, exercise.eval=FALSE}
-
-```
-
-
-```{r yourturn4_1_2-solution}
-# answer
-gapminder %>%                                
-  select(-(c(continent, pop, gdpPercap))) 
-
-# alternate answer
-gapminder %>%                                
-  select(-continent, -pop, -gdpPercap) 
-
-```
-
-
-
-You can also define a range of columns to select by using the `:`
-
-```{r yourturn4_1_3, exercise=TRUE, exercise.eval=FALSE}
-# answer
-gapminder %>%
-  select(country, year:pop)
-```
-
-
-## Take aways
-
-* Restructure data frames with `select()` 
-* Different ways to define what variables are selected by `select()`
-* Reinforce other data transformation functions
-
-
-Here's a list of the {dplyr} functions that are used in this tutorial, and a few more that are handy from time to time:
+Here's a list of the {dplyr} and {tidyr} functions that are used in this tutorial, and a few more that are handy from time to time:
 
 
 |function |action |
 | :--- | :--- |
+| **{dplyr}  | - |
 | `filter()`    | *keep rows*|
 | `select()`    | *keep variables (or drop them -var)*|
 | `mutate()`    | *create a new variable*|
@@ -829,7 +900,8 @@ Here's a list of the {dplyr} functions that are used in this tutorial, and a few
 | `case_when()` | *is used for "recoding" variable, often used with mutate()*|
 | `arrange()`    | *sort from smallest to largest*|
 | `arrange(desc())`    | *sort from largest to smallest*|
-
-
+| **{tidyr}  | - |
+| `pivot_wider()` | |
+| `pivot_longer()` | |
 
 
