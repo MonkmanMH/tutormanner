@@ -1,6 +1,6 @@
 ---
 title: "BIDA302: Lesson 2"
-subtitle: "hands-on examples, with answers"
+subtitle: "Variable types"
 output: learnr::tutorial
 runtime: shiny_prerendered
 ---
@@ -22,8 +22,96 @@ library(readxl)
 ```
 
 
-# 1. Missing Values
+## 1. Variable types
 
+In R, variables come in a variety of types. For this tutorial, we will focus on numeric and logical variables.
+
+
+### Variable types in R
+
+| abbreviation | type | example  |
+|---|------|---|
+| **numeric** |  |  |
+|`int` | integers | `31L`  | 
+|`dbl`  | doubles, also known as real numbers | `31.5` |
+| **data and time** |  |
+|`date` | dates | "2020-10-31" |
+|`dttm` | date-times (a date + a time) |
+| **other** |  |
+|`chr`  | character vectors, also known as strings |
+|`fctr` | factors, which R uses to represent categorical variables with fixed possible values |
+|`lgl` | logical  | `TRUE`, `FALSE`, `NA` |
+
+**Note:** this is an incomplete list! There are other specialized variable types which you may encouter in later, more advanced settings. These are the types we will be working with in this course.
+
+
+### Creating numeric variables
+
+Numeric variables are at the centre of most data analysis. In R, numeric variables are stored in two ways: as integers (without decimals), or doubles (from the term "double precision", or [double-precision floating-point](https://en.wikipedia.org/wiki/Double-precision_floating-point_format), a computer number format). 
+
+Doubles get used when you need a number with a decimal point or a number bigger than roughly two billion. The maximum positive value for a 32-bit binary integer is 2,147,483,647 (2^31 - 1, which happens to be a [double Mersenne prime number](https://en.wikipedia.org/wiki/Double_Mersenne_number) for you number nerds).
+
+
+```{r}
+# a Mersenne prime is a prime number that can be represented as "2^n - 1"
+2^31-1
+
+# a double Mersenne prime a Mersenne prime is where "n" is also a Mersenne prime
+# - in this case, 31 is a Mersenne prime (it's a prime number, and is 2^5 - 1)
+2^(2^5-1)-1 
+
+```
+
+The downside to doubles is that they are imprecise.
+
+```{r}
+# calculate the square root of two, to the 2nd power
+x <- sqrt(2) ^ 2
+x
+
+# what is x - 2?
+x - 2
+```
+
+Which isn't precise, but for most application is close enough!
+
+When you are creating a number vector in R, the default state is a double:
+
+```{r}
+d <- 1
+typeof(d)
+
+# in a data table we see the variable type shown under the variable name
+x <- tribble(~x, 1)
+x
+
+```
+
+
+
+### Logical variables
+
+
+`lgl` stands for logical, vectors that contain only TRUE, FALSE, or NA.
+
+Some functions Logical values usually appear whe
+
+
+### Missing values
+
+`NA` are explicitly missing values.
+
+* they can be included as any type: e.g. numeric or character
+
+
+
+
+## 2. Missing Values
+
+
+## a short example
+
+`is.na` and `anyNA(x)` functions are logical
 
 
 ## Your Turn 1.1: Find the `NA` values
