@@ -24,7 +24,7 @@ library(readxl)
 
 ## 1. Variable types
 
-In R, variables come in a variety of types. For this tutorial, we will focus on numeric and logical variables.
+In R, data can be stored in a variety of types. For this tutorial, we will focus on numeric and logical variables.
 
 
 ### Variable types in R
@@ -42,25 +42,15 @@ In R, variables come in a variety of types. For this tutorial, we will focus on 
 |`fctr` | factors, which R uses to represent categorical variables with fixed possible values |
 |`lgl` | logical  | `TRUE`, `FALSE`, `NA` |
 
-**Note:** this is an incomplete list! There are other specialized variable types which you may encouter in later, more advanced settings. These are the types we will be working with in this course.
+**Note:** This is an incomplete list! There are other specialized variable types which you may encouter in later, more advanced settings. These are the types we will be working with in this course.
 
 
 ### Creating numeric variables
 
 Numeric variables are at the centre of most data analysis. In R, numeric variables are stored in two ways: as integers (without decimals), or doubles (from the term "double precision", or [double-precision floating-point](https://en.wikipedia.org/wiki/Double-precision_floating-point_format), a computer number format). 
 
-Doubles get used when you need a number with a decimal point or a number bigger than roughly two billion. The maximum positive value for a 32-bit binary integer is 2,147,483,647 (2^31 - 1, which happens to be a [double Mersenne prime number](https://en.wikipedia.org/wiki/Double_Mersenne_number) for you number nerds).
+Doubles get used when you need a number with a decimal point or a number bigger than roughly two billion. [^Mersenne_footnote] 
 
-
-```{r}
-# a Mersenne prime is a prime number that can be represented as "2^n - 1"
-2^31-1
-
-# a double Mersenne prime a Mersenne prime is where "n" is also a Mersenne prime
-# - in this case, 31 is a Mersenne prime (it's a prime number, and is 2^5 - 1)
-2^(2^5-1)-1 
-
-```
 
 The downside to doubles is that they are imprecise.
 
@@ -109,12 +99,12 @@ Some functions Logical values usually appear whe
 ## 2. Missing Values
 
 
-## a short example
+### a short example
 
 `is.na` and `anyNA(x)` functions are logical
 
 
-## Your Turn 1.1: Find the `NA` values
+### Your Turn 1.1: Find the `NA` values
 
 `is.na` and `anyNA(x)` functions are logical
 
@@ -203,7 +193,7 @@ sum(x, na.rm = TRUE)
 
 
 
-## Your Turn 1.2: 
+### Your Turn 1.2: 
 
 First step: review the structure of the `mpg` data set:
 
@@ -553,6 +543,24 @@ https://readr.tidyverse.org/
 
 {readxl}
 https://readxl.tidyverse.org/index.html
+
+***
+
+https://stackoverflow.com/questions/63675677/include-a-chunk-in-an-r-markdown-footnote
+
+[^Mersenne_footnote]:
+
+The maximum positive value for a 32-bit binary integer is 2,147,483,647. This number is tied to the how numbers are stored in 32-bit computers, and is represented as (2^31 - 1). For you number nerds, this happens to be a [double Mersenne prime number](https://en.wikipedia.org/wiki/Double_Mersenne_number).
+
+```{r}
+# a Mersenne prime is a prime number that can be represented as "2^n - 1"
+2^31-1
+
+# a double Mersenne prime a Mersenne prime is where "n" is also a Mersenne prime
+# - in this case, 31 is a Mersenne prime (it's a prime number, and is 2^5 - 1)
+2^(2^5-1)-1 
+
+```
 
 
 
