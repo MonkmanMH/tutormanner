@@ -12,7 +12,7 @@ runtime: shiny_prerendered
 
 ```{r setup, include=FALSE}
 library(learnr)
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = TRUE)
 
 # packages used in the tutorial
 library(tidyverse)
@@ -54,7 +54,7 @@ Doubles get used when you need a number with a decimal point or a number bigger 
 
 The downside to doubles is that they are imprecise.
 
-```{r}
+```{r numeric_1_example, exercise=TRUE, exercise.eval=FALSE}
 # calculate the square root of two, to the 2nd power
 x <- sqrt(2) ^ 2
 x
@@ -67,7 +67,7 @@ Which isn't precise, but for most application is close enough!
 
 When you are creating a number vector in R, the default state is a double:
 
-```{r}
+```{r numeric_2_example, exercise=TRUE, exercise.eval=FALSE}
 d <- 1
 typeof(d)
 
@@ -84,7 +84,21 @@ x
 
 `lgl` stands for logical, vectors that contain only TRUE, FALSE, or NA.
 
-Some functions Logical values usually appear whe
+Some functions return a logical value; for example:
+
+```{r logical_1_example, exercise=TRUE, exercise.eval=FALSE}
+x <- 2
+x == 2
+```
+
+It's also possible to create a list with logical values:
+
+```{r logical_2_example, exercise=TRUE, exercise.eval=FALSE}
+logical_list <- c(TRUE, TRUE, FALSE)
+logical_list
+```
+
+
 
 
 ### Missing values
@@ -93,6 +107,14 @@ Some functions Logical values usually appear whe
 
 * they can be included as any type: e.g. numeric or character
 
+```{r missing_1_example, exercise=TRUE, exercise.eval=FALSE}
+
+logical_list <- c(TRUE, NA, FALSE)
+logical_list
+
+number_list <- c(1, NA, 3)
+number_list
+```
 
 
 
@@ -112,31 +134,31 @@ What does `is.na(x)` return?
 
 
 ```{r missing1, exercise=TRUE, exercise.eval=FALSE}
-x <- c(1, NA, 3)
+number_list <- c(1, NA, 3)
 
 # answer
-is.na(x)
+is.na(number_list)
 
 ```
 
 
-There are three values in `x`, so three tests--only the second one is `NA`.
+There are three values in `number_list`, so `is.na()` runs three tests--only the second one is `NA`.
 
-What about `anyNA(x)`?
+What about `anyNA(number_list)`?
 
 ```{r missing2, exercise=TRUE, exercise.eval=FALSE}
 # example
-x <- c(1, NA, 3)
+number_list <- c(1, NA, 3)
 
 ```
 
 
 
 ```{r missing2-solution}
-x <- c(1, NA, 3)
+number_list <- c(1, NA, 3)
 
 # answer
-anyNA(x)
+anyNA(number_list)
 
 # There are three values in `x`, so three tests--only the second one is `NA`
 
@@ -149,7 +171,7 @@ What if we put an exclamation mark -- the "not" symbol -- in front of `is.na()`?
 
 ```{r missing3, exercise=TRUE, exercise.eval=FALSE}
 # example
-x <- c(1, NA, 3)
+number_list <- c(1, NA, 3)
 
 ```
 
@@ -157,9 +179,9 @@ x <- c(1, NA, 3)
 
 ```{r missing3-solution}
 # example
-x <- c(1, NA, 3)
+number_list <- c(1, NA, 3)
 
-!is.na(x)
+!is.na(number_list)
 ```
 
 
@@ -168,15 +190,15 @@ x <- c(1, NA, 3)
 
 Run this code to see what happens when there are `NA` values in a variable, and you try to sum them.
 
-Use `na.rm` within the `sum()` function to calculate the sum of `x`.
+Use `na.rm` within the `sum()` function to calculate the sum of `number_list`.
 
 
 ```{r missing4, exercise=TRUE, exercise.eval=FALSE}
 # example
-x <- c(1, NA, 3)
+number_list <- c(1, NA, 3)
 
 # example
-sum(x)
+sum(number_list)
 
 ```
 
@@ -185,8 +207,8 @@ sum(x)
 ```{r missing4-solution}
 
 # answer
-x <- c(1, NA, 3)
-sum(x, na.rm = TRUE)
+number_list <- c(1, NA, 3)
+sum(number_list, na.rm = TRUE)
 
 
 ```
@@ -317,232 +339,6 @@ displ_class_by_cyl %>%
 
 
 
-
-# 2. Import data
-
-
-<!--
-
-Can't read a csv file locally!
-
-https://github.com/harris-coding-lab/codinglab/issues/3
-
--->
-
-## 1. Reading a CSV file
-
-CSV files are very commonly used for storing flat files. They don't have any formatting--just the number or text in the cell.
-
-The package {readr} is designed to make importing these files simple.
-
-
-(This example comes straight from https://readr.tidyverse.org/index.html)
-
-Run this chunk to create an object called `mtcars`, from a CSV file of the same name.
-
-```{r import2_1_1, exercise=TRUE, exercise.eval=FALSE}
-
-# example
-mtcars <- read_csv("mtcars.csv")
-
-```
-
-Adding the `cols()` allows us to alter what {readr} has decided for us. For example, we could set the `cyl` variable to be an integer.
-
-```{r import2_1_2, exercise=TRUE, , exercise.eval=FALSE}
-# example
-read_csv("mtcars.csv",
-         col_types =
-           cols(cyl = col_integer())
-         )
-
-```
-
-
-## Your Turn 1.1
-
-Insert an R chunk and rerun the example above, but with the `am` and `gear` variables also set to integer.
-
-```{r import2_1_3, exercise=TRUE, , exercise.eval=FALSE}
-
-```
-
-
-```{r import2_1_3-solution}
-# solution
-read_csv("mtcars.csv",
-         col_types = 
-           cols(cyl = col_integer(),
-                am = col_integer(),
-                gear = col_integer())
-)
-
-```
-
-
-
-
-The {readr} package allows a lot of control over how the file is read. Of particular utility are 
-
-* `na = ""` -- specify which values you want to be turned into `NA`
-
-* `skip = 0` -- specify how many rows to skip 
-
-* `n_max = Inf` -- the maximum number of records to read
-
-
-## Your Turn 1.2
-
-Read the first 5 rows of the "mtcars.csv" file.
-
-```{r import2_1_4, exercise=TRUE, , exercise.eval=FALSE}
-
-```
-
-
-```{r import2_1_4-solution}
-# solution
-read_csv("mtcars.csv", 
-         n_max = 5)
-
-
-
-```
-
-
-
-
-
-
-## 2. Reading an Excel file
-
-If anything, Excel files are more common than CSV and other plain-text data files. They seem to multiply like coat hangers in the closet...
-
-And as we see in the article by Karl Broman & Kara Woo, ["Data Organization in Spreadsheets"](https://www.tandfonline.com/doi/full/10.1080/00031305.2017.1375989), they can encourage some ways of storing information that makes it hard for us to analyze. Excel files can also contain a wide variety of data format types. {readxl} tries to figure out what's going on, but like {readr}, it allows you to override some of those automatic decisions.
-
-
-```{r import2_2_1, exercise=TRUE, , exercise.eval=FALSE}
-deaths <- read_excel("data/deaths.xlsx")
-deaths
-```
-
-What do you notice about the "Date of birth" and "Date of death" columns?
-
-
-
-```{r quiz_import_1}
-quiz(
-  question("What do you notice about the `Date of birth` and `Date of death` columns?",
-    answer("It's exactly the same as it was before"),
-    answer("The variables (columns) are in different order"),
-    answer("There are now `NA` values", correct = TRUE),
-    answer("The values in the cells have changed")
-  )
-)
-```
-
-
-
-## Your Turn 2.1
-
-Read in the "deaths" file, but use the `range = ` option to specify when to start reading the file:
-
-In this first example, we will define the range as cells A1:B3
-
-```{r import2_2_2, exercise=TRUE, , exercise.eval=FALSE}
-# Example
-deaths <- read_excel("deaths.xlsx", 
-                     range = "A1:B3")
-
-deaths
-
-```
-
-But we want a bigger area...but drop the first few rows.
-
-```{r import2_2_3, exercise=TRUE, , exercise.eval=FALSE}
-
-```
-
-```{r import2_2_3-solution}
-# solution
-deaths <- read_excel(
-  "deaths.xlsx",
-  range = "A5:F15"
-)
-
-deaths
-
-```
-
-
-Use the `skip =` and `n_max =` options to achieve the same thing:
-
-```{r}
-
-# solution
-deaths <- read_excel(
-  readxl_example("deaths.xlsx"),
-  skip = 4,
-  n_max = 10
-)
-
-deaths
-
-
-```
-
-
-## Your Turn 2.2
-
-Excel files often (almost always?) have multiple sheets in them. It's possible to specify which one you want to use with the `sheets = ""` option. You can also use the position number (if you happen to know it). 
-
-Note that if you don't specify the sheet, {readxl} will default to the first one.
-
-The `excel_sheets()` function will tell you the name of the sheets in an Excel file.
-
-```{r}
-datasets <- "datasets.xlsx"
-
-excel_sheets(datasets)
-
-# Example
-read_excel(datasets, "iris")
-
-```
-
-Now, read in the "mtcars" sheet using the name of the sheet.
-
-
-```{r}
-
-# Solution
-read_excel(datasets, "mtcars")
-
-```
-
-And finally, read in the "quakes" sheet, using the position.
-
-```{r}
-# Solution
-read_excel(datasets, 4)
-
-```
-
-
-
-
-## Import data - reference material
-
-You can find more details in _R for Data Science_:
-https://r4ds.had.co.nz/data-import.html
-
-
-{readr} 
-https://readr.tidyverse.org/
-
-{readxl}
-https://readxl.tidyverse.org/index.html
 
 ***
 
