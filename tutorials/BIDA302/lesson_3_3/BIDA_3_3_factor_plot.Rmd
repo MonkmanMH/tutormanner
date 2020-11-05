@@ -36,7 +36,9 @@ gapminder_2007 <- readRDS(file = "gapminder_2007.rds")
 
 ## 3.3 Factors
 
-* understand how factor type variables differ from character strings
+* understand the use of categorical variables
+
+* understand how R's factor type variables differ from character strings
 
 * understand how to manipulate factors
 
@@ -59,7 +61,19 @@ This hands-on exercise draws heavily on material at the following
 
 We love factors. We hate factors. 
 
-Factors make working with categorical variables a breeze: you can sort them or arrange them arbitrarily (think days of the week), 
+Factors are an R variable type that is very useful when we are working with categorical variables. Some categorical variables have a particular order, such as: 
+
+* size categories: small-medium-large or short-tall-grande-venti
+
+* sequence: the days of the week or Canada's provinces from east to west
+
+Other categorical variables do not have an implicit order:
+
+* someone's marital status or country of citizenship
+
+The factor variable type is designed to streamline working with categorical variables. With a factor, you can define the order to arrange them in the way that makes sense for the category. If the months of the year were a character variable, the only way to sort them would be alphabetically (April becomes the first month of the year, followed by August). With a factor, you can specify the order.
+
+This is particularly useful when it comes to ordering the categories in a table or plot.
 
 But there are some traps that you might fall into, if you're not careful.
 
@@ -85,6 +99,9 @@ Use these four functions to examine the `continents` variable in the `gapminder`
 
 
 ```{r factors1_1, exercise=TRUE, exercise.eval=FALSE}
+# example
+str(gapminder$continent)
+
 
 ```
 

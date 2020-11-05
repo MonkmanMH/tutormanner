@@ -83,9 +83,10 @@ gapminder_2007
 
 Let's take a look at the structure of a basic `ggplot()` function:
 
-`ggplot(data = <DATA>) + `
-
-`  <GEOM_FUNCTION>(mapping = aes(<MAPPINGS>))`
+```
+ggplot(data = <DATA>) +
+  <GEOM_FUNCTION>(mapping = aes(<MAPPINGS>))
+```  
 
 
 As you can see, the first thing in the function is the data frame you are using. 
