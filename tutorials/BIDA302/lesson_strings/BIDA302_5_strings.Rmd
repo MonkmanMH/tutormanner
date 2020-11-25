@@ -1,0 +1,616 @@
+---
+title: "BIDA302: Lesson 5"
+subtitle: "hands-on examples, with answers"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+
+
+<!-- This file by Martin Monkman is licensed under a Creative Commons Attribution 4.0 International License. 
+
+-->
+
+
+```{r setup, include=FALSE}
+library(learnr)
+knitr::opts_chunk$set(echo = FALSE)
+
+# packages used in the tutorial
+library(tidyverse)
+# other tidyverse packages
+library(stringr)
+library(lubridate)
+library(glue)
+
+
+# data used in the tutorial
+fruit_list <- c("apple", "banana", "pear")
+
+double_quote <- "\"" # or '"'
+single_quote <- '\'' # or "'"
+
+musician_first <- c("Sly", "Billie", "Thelonious", "Maroon", "Willie", "Led")
+musician_last <- c("Stone", "Ellish", "Monk", "5", "Nelson", "Zeppelin")
+
+gapminder <- gapminder::gapminder
+
+our_date <- "Jan 2019"
+
+four_dates <- tribble(~ref_date, "Dec 2019", "Feb 2020", "Jan 2018", "Mar 2021")
+four_dates_tbl <- four_dates %>% 
+  mutate(value = 1:4)
+
+
+```
+
+
+
+
+## Strings
+
+For this exercise, we will be using the tidyverse package {stringr}. Note that {stringr} is part of the tidyverse, but not a core package that loads with {tidyverse} (like {lubridate}), so it has to be loaded separately.
+
+
+Strings are characters, numbers, etc. that get represented as a unit inside quotation marks. These can be assigned to an object, and then referenced later. As well, in your data science work you will encounter strings as variables (i.e. character variables), variable names, file names, and many other places.
+
+```{rr string1_example, exercise=TRUE, exercise.eval=FALSE}
+
+string1 <- "This is my 1st string!"
+
+string1
+
+```
+
+
+## 1a. Regular expressions
+
+One important tool for working with strings are regular expressions. Because of human laziness, **reg**ular **ex**pressions becomes shortened to "regex"
+
+> regexps are a concise language for describing patterns in strings
+
+They are powerful ways to filter and manipulate strings based on those patterns, and you will encounter them in many programming and data analysis environments (that is, they are not unique to R!)
+
+
+### regex matching functions
+
+Here are some basic matching functions:
+
+| character | what it does |
+| ---- | ---- |
+| "abc" | matches "abc" |
+| "[a][b][c]" | matches "abc" |
+| "[abc]" | matches "a", "b", or "c" |
+| "[^abc]" | matches anything _except_ "a", "b", or "c" |
+| "^" | match start of string |
+| "$" | match end of string |
+
+
+The {stringr} function `str_view()` shows where in our string the pattern first appears, while `str_view_all()` shows all the matches. First we create an object "fruit_list" with three strings in it.
+
+
+
+```{r str_1a_example, exercise=TRUE, exercise.eval=FALSE}
+fruit_list <- c("apple", "banana", "pear")
+
+# which words start with "a"?
+str_view(fruit_list, "^a")
+```
+
+### Your turn 1.1 
+
+Which words have the vowel combination "ea" in them?
+
+```{r str_view_1a-1-1_example, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+```{r str_view_1a-1-1_example-solution}
+# solution
+str_view(fruit_list, "ea")
+
+```
+
+
+Which words end with "a"?
+
+```{r str_view_1a-1-2_example, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+```{r str_view_1a-1-2_example-solution}
+# solution
+str_view(fruit_list, "a$")
+
+```
+
+
+---
+
+## 1b. More regex
+
+Adding some additional information can expand the pattern:
+
+| character | what it does |
+| ---- | ---- |
+| "?" | 0 or 1 |
+| "+" | 1 or more |
+| "*" | 0 or more |
+
+
+The question mark is useful for words with various spellings—the British and American variations of words like "colour" and "neighbour".
+
+For example, `"colou?r"` will find both "colour" and "color".
+
+
+| character | what it does |
+| ---- | ---- |
+| "{n}" | exactly n times |
+| "{n,}" | n or more |
+| "{n,m}" | between n and m times |
+
+For example, `"x{2,5}"` will find instances where the letter x is used between 2 and 5 times.
+
+
+```{r str_view_1b_example, exercise=TRUE, exercise.eval=FALSE}
+# which words in our fruit list have a double "p"?
+
+```
+
+```{r str_view_1b_example-solution}
+
+str_view(fruit_list, "p{2}")
+
+```
+
+
+## 1c. Regex special characters
+
+**quotes**
+
+To find single and double quotes in our string, they need to be "escaped" with a backslash `\`
+
+```{r str_view_1c-1_example, exercise=TRUE, exercise.eval=FALSE}
+
+double_quote <- "\"" # or '"'
+single_quote <- '\'' # or "'"
+
+double_quote
+single_quote
+
+```
+
+
+* to see a representation of the string as it will print, use the function `writeLines()`
+
+```{r str_view_1c-2_example, exercise=TRUE, exercise.eval=FALSE}
+
+writeLines(double_quote)
+
+```
+
+
+
+```{r str_view_1c-3_example, exercise=TRUE, exercise.eval=FALSE}
+
+string2 <- 'The 2nd string has a "quote" so it is inside single quotes'
+
+string2
+
+writeLines(string2)
+
+```
+
+
+**other special characters**
+
+These also need to be escaped:
+
+| character | what it is |
+| ---- | ---- |
+| "\\" | backslash |
+| "\d" | any digit |
+| "\n" | newline (line break) |
+| "\s" | any whitespace (space, tab, newline)
+| "\t" | tab |
+| "\u..." | unicode characters* |
+
+
+* https://en.wikipedia.org/wiki/List_of_Unicode_characters
+
+This means that to find a digit in a character string, your R regex code needs two backslashes:
+
+
+```{r digit_example, exercise=TRUE, exercise.eval=FALSE}
+
+postal_code <- "V8P 5C2" #UVic Continuing Studies
+
+str_view_all(postal_code, "\\d")
+
+```
+
+
+
+One unicode character is the interrobang, a combination of question mark and exclamation mark:
+
+```{r interrobang_example, exercise=TRUE, exercise.eval=FALSE}
+interrobang <- "\u2048"
+interrobang
+
+```
+
+
+To make a shruggie, you need to escape the backslash that is their right arm. But when it's a single character string, it still doesn't work, so you have to glue the pieces together:
+
+```{r shruggie_example, exercise=TRUE, exercise.eval=FALSE}
+
+shruggie <- "¯\\_(ツ)_/¯"
+shruggie
+
+shruggie <- glue::glue("¯\\", "_(ツ)_", "/¯")
+shruggie
+
+```
+
+## Quiz 1
+
+
+```{r quiz1}
+quiz(
+  question("What regex could you use to find two consecutive numbers in a string?",
+    answer('"\\d"'),
+    answer('"\\n"'),
+    answer('"\\d\\d"', correct = TRUE),
+    answer('"{2n}\\\\d"')
+  )
+)
+```
+
+
+
+
+## 2. Basic {stringr} functions
+ 
+
+![stringr hex](stringr_400.png)
+
+
+{stringr} functions 
+
+| function | purpose |
+| ---- | ---- |
+| str_length(x)  | the number of characters in `x` |
+| str_c() | concatenates a list of strings |
+| str_sub(x, start = , end = ) | returns characters of `x` |
+| str_detect(x, pattern) | TRUE/FALSE if there is a pattern match |
+| str_replace(x, pattern, newtext) | replace |
+
+
+
+
+```{r str_length_0_example, exercise=TRUE, exercise.eval=FALSE}
+
+musician_first <- c("Sly", "Billie", "Thelonious", "Maroon", "Willie", "Led")
+musician_first
+
+```
+
+
+```{r str_1_example, exercise=TRUE, exercise.eval=FALSE}
+# what is the length of each name in the "musician_first" object?
+
+```
+
+```{r str_1_example-solution}
+
+str_length(musician_first) 
+
+```
+
+
+use `str_c` to collapse list into one string
+
+```{r str_2_example, exercise=TRUE, exercise.eval=FALSE}
+
+```
+
+```{r str_2_example-solution}
+
+str_c(musician_first, collapse = ", ")
+
+```
+
+## Quiz 2
+
+```{r quiz2}
+quiz(
+  question('Which {stringr} function would you use to replace the vowels in "fruit_list" with an exclamation mark?',
+    answer('str_detect(fruit_list, [aeiou], !)'),
+    answer('str_detect(fruit_list, "[aeiou]", "!")'),
+    answer('str_replace(fruit_list, [aeiou], !)'),
+    answer('str_sub(fruit_list, [aeiou], !)d)')
+  )
+)
+```
+
+str_replace(x, pattern, newtext)
+
+---
+
+## 3. Combining strings
+
+Use `str_c` to join two character vectors, separated by a space
+
+
+```{r str_3_example, exercise=TRUE, exercise.eval=FALSE}
+
+musician_last <- c("Stone", "Ellish", "Monk", "5", "Nelson", "Zeppelin")
+
+str_c(musician_first, musician_last, sep = " ")
+
+```
+
+## Your turn 3.1
+
+Now join `musician_first` to `musician_last` (the other way around!), separated by an apostrophe and a space
+
+```{r str_3-1_example, exercise=TRUE, exercise.eval=FALSE}
+# what is the length of each name in the "musician_first" object?
+
+```
+
+```{r str_3-1_example-solution}
+
+#solution
+str_c(musician_last, musician_first, sep = ", ")
+
+
+```
+
+---
+
+## 4a. Pattern matching
+
+## Your turn 4.1
+
+Are there any vowels in the string `musician_first`? Use `str_detect()`
+
+And then count them with `str_count()`:
+
+```{r str_4-1-1_example, exercise=TRUE, exercise.eval=FALSE}
+
+
+```
+
+```{r str_4-1-1_example-solution}
+# solution
+str_detect(musician_first, "[aeiou]")
+
+str_count(musician_first, "[aeiou]")
+
+```
+
+Are there any digits in `musician_last`? (Don't forget that you need to escape any backslashes you use!)
+
+
+```{r str_4-1-2_example, exercise=TRUE, exercise.eval=FALSE}
+
+
+```
+
+
+```{r str_4-1-2_example-solution}
+# solution
+str_detect(musician_last, "\\d")
+
+```
+
+
+
+
+Extract chunks of text (sub-strings) by their location using `str_sub()`
+
+* note that the numbers specify the start and end positions 
+
+In this example, the code extracts the sub-string starting at the first character, and ends at the 2nd.
+
+
+```{r str_4-1-3_example, exercise=TRUE, exercise.eval=FALSE}
+
+str_sub(musician_first, 1, 2)  
+
+
+```
+
+
+`str_locate()` finds the first position of the pattern:
+
+```{r str_4-1-4_example, exercise=TRUE, exercise.eval=FALSE}
+
+# look for pairs of vowels
+str_locate(musician_first, "[aeiou][aeiou]")
+
+# look for a specific match ...
+str_locate(musician_first, "oo")
+
+```
+
+
+Extract the first case of a vowel:
+
+
+```{r str_4-1-5_example, exercise=TRUE, exercise.eval=FALSE}
+
+str_extract(musician_first, "[aeiou]")
+
+```
+
+## Your turn 4.2
+
+Extract the pairs of vowels:
+
+```{r str_4-2-1_example, exercise=TRUE, exercise.eval=FALSE}
+
+
+```
+
+
+```{r str_4-2-1_example-solution}
+# solution
+str_extract(musician_first, "[aeiou][aeiou]")
+
+# alternate solution
+str_extract(musician_first, "[aeiou]{2}")
+
+
+```
+
+
+## 4b. Filtering on patterns
+
+Filter by country that has "land" in the name
+
+```{r}
+
+gapminder <- gapminder::gapminder 
+
+gapminder %>% 
+  filter(str_detect(country, "land")) %>% 
+  distinct(country)
+
+```
+
+### Your turn 4.3
+
+What about those countries where "land" is at the end of the name?
+
+
+```{r str_4b-1_example, exercise=TRUE, exercise.eval=FALSE}
+
+
+```
+
+
+```{r str_4b-1_example-solution}
+# solution
+
+gapminder %>% 
+  filter(str_detect(country, "land$")) %>% 
+  distinct(country)
+
+```
+
+Or those where "land" is at the end _and_ is preceded by only three letters?
+
+
+```{r str_4b-2_example, exercise=TRUE, exercise.eval=FALSE}
+
+
+```
+
+
+```{r str_4b-2_example-solution}
+# solution
+
+pattern_string <- "^\\w{3}land$"
+
+gapminder %>% 
+  filter(str_detect(country, pattern_string)) %>% 
+  distinct(country)
+
+
+```
+
+
+
+
+## Quiz
+
+
+```{r quiz1_5}
+quiz(
+  question("What regex could you use to find two consecutive numbers in a string?",
+    answer('"\\d{2}"', correct = TRUE),
+    answer('"\\n"'),
+    answer('"\\d"'),
+    answer('"{2n}\\d"')
+  )
+)
+```
+
+
+
+
+## TAKE AWAYS
+
+* Understand the basics of regular expressions (regexps)
+
+* Understand basic functions in {stringr} for working with strings
+
+  - `str_view()` and `str_view_all()`
+
+* Demonstrate ability to use those functions
+
+
+
+## REFERENCE
+
+["Strings" in _R for Data Science_](https://r4ds.had.co.nz/strings.html) by Hadley Wickham and Garrett Grolemund
+
+[{stringr}](https://stringr.tidyverse.org/)
+
+[regex101](https://regex101.com/)
+
+
+## Complete list of functions in the tutorial
+
+
+
+
+Here's a list of the {stringr} functions that are used in this tutorial, and a few more that you may find handy from time to time:
+
+| character | what it does |
+| :--- | :--- |
+| **regex**  | - |
+| "abc" | matches "abc" |
+| "[a][b][c]" | matches "abc" |
+| "[abc]" | matches "a", "b", or "c" |
+| "[^abc]" | matches anything _except_ "a", "b", or "c" |
+| "^" | match start of string |
+| "$" | match end of string |
+| ---- | ---- |
+| "?" | 0 or 1 |
+| "+" | 1 or more |
+| "*" | 0 or more |
+| ---- | ---- |
+| "{n}" | exactly n times |
+| "{n,}" | n or more |
+| "{n,m}" | between n and m times |
+| ---- | ---- |
+| "\\" | backslash |
+| "\d" | any digit |
+| "\n" | newline (line break) |
+| "\s" | any whitespace (space, tab, newline)
+| "\t" | tab |
+| "\u..." | unicode characters* |
+
+
+|function |action |
+| :--- | :--- |
+| **{stringr}**  | - |
+| `str_view()`    | shows the first match |
+| `str_view_all()` | shows all the matches | 
+| ---- | ---- |
+| str_length(x)  | the number of characters in `x` |
+| str_c() | concatenates a list of strings |
+| str_sub(x, start = , end = ) | returns characters of `x` |
+| str_detect(x, pattern) | TRUE/FALSE if there is a pattern match |
+| str_replace(x, pattern, newtext | replace |
+
+
+| `writeLines()` | writes text lines in the output |
+
+
+See the help function for `?'"'`
+
+
