@@ -1,6 +1,6 @@
 ---
-title: "BIDA302: Lesson 5"
-subtitle: "hands-on examples, with answers"
+title: "Working with strings"
+subtitle: "Using {stringr} in R"
 output: learnr::tutorial
 runtime: shiny_prerendered
 ---
@@ -8,6 +8,14 @@ runtime: shiny_prerendered
 
 
 <!-- This file by Martin Monkman is licensed under a Creative Commons Attribution 4.0 International License. 
+
+
+Some content is drawn from 
+
+A. _R for Data Science_ by Hadley Wickham and Garrett Grolemund
+-- (https://r4ds.had.co.nz/) -- which is licensed under the Creative Commons
+Attribution-NonCommercial-NoDerivs 3.0 (CC BY-NC-ND 3.0 US) 
+
 
 -->
 
@@ -324,16 +332,17 @@ str_c(musician_first, collapse = ", ")
 
 ```{r quiz2}
 quiz(
-  question('Which {stringr} function would you use to replace the vowels in "fruit_list" with an exclamation mark?',
+  question("Which {stringr} function would you use to change the vowels in fruit_list to an exclamation mark?",
     answer('str_detect(fruit_list, [aeiou], !)'),
     answer('str_detect(fruit_list, "[aeiou]", "!")'),
-    answer('str_replace(fruit_list, [aeiou], !)'),
-    answer('str_sub(fruit_list, [aeiou], !)d)')
+    answer('str_replace(fruit_list, "[aeiou]", "!")', correct = TRUE),
+    answer('str_sub(fruit_list, "[aeiou]", "!"))')
   )
 )
 ```
 
-str_replace(x, pattern, newtext)
+
+
 
 ---
 
