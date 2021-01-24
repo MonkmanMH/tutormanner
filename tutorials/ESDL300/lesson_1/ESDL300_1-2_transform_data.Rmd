@@ -904,3 +904,18 @@ Here's a list of the {dplyr} and {tidyr} functions that are used in this tutoria
 | `pivot_longer()` | |
 
 
+## Reference
+
+This tutorial is written using the {learnr} package
+
+* github repo: https://github.com/MonkmanMH/tutormanner
+
+* {learnr} reference page: https://rstudio.github.io/learnr/index.html
+
+
+**License:**
+
+This file by Charlotte Wickham (with modifications by Martin Monkman) is licensed under a [Creative Commons Attribution 4.0 International License.](https://creativecommons.org/licenses/by/4.0/), adapted from the original work at https://github.com/rstudio/master-the-tidyverse by RStudio and https://github.com/cwickham/data-science-in-tidyverse-solutions. 
+
+The tables of functions and operators are from Gina Reynolds, [Tidyverse in Action](https://github.com/EvaMaeRey/tidyverse_in_action)
+

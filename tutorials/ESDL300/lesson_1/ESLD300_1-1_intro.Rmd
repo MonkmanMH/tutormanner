@@ -477,3 +477,21 @@ cor(anscombe_1$x1, anscombe_1$y1)
 
 ```
 
+
+
+## Reference
+
+This tutorial is written using the {learnr} package
+
+* github repo: https://github.com/MonkmanMH/tutormanner
+
+* {learnr} reference page: https://rstudio.github.io/learnr/index.html
+
+
+**License:**
+
+This file by Martin Monkman is licensed under a [Creative Commons Attribution 4.0 International License.](https://creativecommons.org/licenses/by/4.0/)
+
+The tables of functions and operators are from Gina Reynolds, [Tidyverse in Action](https://github.com/EvaMaeRey/tidyverse_in_action)
+
+
