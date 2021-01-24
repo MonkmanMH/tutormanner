@@ -1,0 +1,479 @@
+---
+title: "ESDL300: Introduction to R"
+subtitle: "hands-on examples, with answers"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+
+
+<!-- 
+This file by Martin Monkman is licensed under a Creative Commons Attribution 4.0 International License
+
+The tables of functions and operators are from Gina Reynolds, [Tidyverse in Action](https://github.com/EvaMaeRey/tidyverse_in_action)
+-->
+
+
+```{r setup, include=FALSE}
+library(learnr)
+tutorial_options(exercise.completion = FALSE)
+
+knitr::opts_chunk$set(echo = FALSE)
+
+# packages used in the tutorial
+library(tidyverse)
+library(gapminder)
+
+```
+
+## Objectives
+
+At the end of this tutorial, you will have:
+
+* An understanding of and ability to use mathematical and assignment operators in R
+
+* The ability to use basic statistical functions in R
+
+
+## A. R as a calculator
+
+In the code window below, type `10 + 4`, then press the "Run Code" button:
+
+```{r A1, exercise=TRUE, exercise.eval=FALSE}
+
+
+
+```
+
+(The `[1]` is telling us that the "14", the result of our addition, is the first element in our vector.)
+
+
+
+### other operators
+
+In addition to these functions, R has a number of operators that add significantly to your code.
+
+**Arithmetic operators**
+
+| Operator | Description |
+| :--- | :--- |
+| + | *plus* |
+| - | *minus* |
+| \* | *multiplication*  |
+| / | *division* |
+| ^ | *exponential* |
+
+<P>
+
+
+### Your Turn A-1: math
+
+Try some other math in the code window below.
+
+*Notes:* 
+
+* You can put multiple equations, each separate math equation needs to be on its own line.
+
+* You can leave lines blank—some white space will make your code easier to read.
+
+* If you want to add an explanation about what your code is doing, you can add a comment that won't be "interpreted" as instructions by starting the line with a `#` symbol
+
+```{r A1_yt, exercise=TRUE, exercise.eval=FALSE}
+# This is my math experiment
+
+
+```
+
+
+
+## B. The power of named variables 
+
+In R, as in other programming languages, we can create named _objects_, and those objects can used in subsequent calculations. 
+
+
+### the assignment arrow
+
+In R, we use an assignment arrow to create a named object.
+
+It looks like this:  `<-` 
+
+It is a combination of a "less than" sign, followed by a hyphen. 
+
+
+You can read it as:
+
+`object_name <- value`
+
+or even:
+
+`new_thing <- old_thing`
+
+
+In the example below, we will create an object "x" with the value 10. The object is then part of the R environment, and can be used later. 
+
+
+To show `x` in the console, we type `x`
+
+```{r B1, exercise=TRUE, exercise.eval=FALSE}
+
+x <- 10
+
+x
+
+```
+
+
+
+
+### Your Turn B.1: naming objects
+
+Create a new object "y" with the value 4, and print it.
+
+```{r B1-1_yt, exercise=TRUE, exercise.eval=FALSE}
+
+
+```
+
+
+```{r B1-1_yt-solution}
+# answer
+y <- 4
+
+y
+
+```
+
+
+In the chunk below two objects are created and added together.
+
+
+```{r B1-2, exercise=TRUE, exercise.eval=FALSE}
+
+x <- 10
+
+y <- 4
+
+x + y
+
+```
+
+
+
+How would you set `x` equal to 20?
+
+One solution:
+
+`x <- 20`
+
+
+Another solution: since we earlier assigned `x` a value of 10
+
+`x <- x * 2`
+
+
+Try the second solution in the chunk below:
+
+```{r B1-3, exercise=TRUE, exercise.eval=FALSE}
+
+x <- 10
+
+
+```
+
+
+```{r B1-3-solution}
+# answer
+x <- 10
+
+x <- x * 2
+
+x
+
+```
+
+
+
+
+### Your Turn B.2: more math
+
+
+Create an object "x" with the value of 12, an object "y" with the value of 3, and an object "z" with a value of 7.  
+
+Then divide "x" by "y", and "x" by "z".
+
+Once you have your code written, run the chunk.
+
+```{r B2-1_yt, exercise=TRUE, exercise.eval=FALSE}
+
+
+```
+
+
+
+```{r B2-1_yt-solution}
+# answer
+x <- 12
+y <- 3
+z <- 7
+
+x/y
+
+# The result is 4
+
+x/z
+
+# The result is 1.714286
+```
+
+
+
+## C. Strings
+
+In R, character strings are created by putting letters, numbers, and other symbols inside quotation marks:
+
+`t <- "If it's inside quotation marks, it's a character"`
+
+
+Let's print the object `hello_world`:
+
+```{r C1, exercise=TRUE, exercise.eval=FALSE}
+
+hello_world <- "Hello, world"
+
+
+```
+
+Note that if we put a number inside quotation marks, it's now a character string—without quotation marks, it is a number. If we try to use a character string that looks like a number in a math equation, R throws an error:
+
+```{r C2_yt, exercise=TRUE, exercise.eval=FALSE}
+
+a_number <- 10
+
+not_a_number <- "10"
+
+a_number + not_a_number
+
+```
+
+
+
+## D. Lists & functions
+
+The earlier examples have a single value in each object. Most data analysis is the summarization of multiple values—means, medians, correlations, and advanced machine learning methods are all approaches that take multiple values as inputs.
+
+In R, a function's syntax looks like this:
+
+`function_name(variable, perhaps_an_argument)`
+
+In R, one way to create one type of list (technically, an atomic vector) of numbers is using the `c()` function ("c" for "combine"). Here's the code to create a list of numbers:
+
+
+```{r D1-setup}
+# setup chunk with bida_numbers
+bida_numbers <- c(301, 302, 404, 405, 406)
+
+```
+
+```{r D1-1, exercise=TRUE}
+
+bida_numbers <- c(301, 302, 404, 405, 406)
+
+bida_numbers
+
+```
+
+We can then apply a function to the object `bida_numbers`. For example, to calculate the mean, we use the function `mean()`:
+
+```{r D1-2, exercise=TRUE, exercise.eval=FALSE, exercise.setup = "D1-setup"}
+
+mean(bida_numbers)
+
+```
+
+### Some summary functions
+
+
+Some basic statistical functions  
+
+
+**Two-variable statistical functions**
+
+| Function | Description |
+| :--- | :--- |
+| `min()` <br> `max()` | *minimum and maximum values* |
+| `mean()` <br> `median()` <br> `mode()` | *measures of "average"* |
+| `sum()`  | *adds up the values* |
+| `sd()`  | *calculates the standard deviation* |
+| `var()`  | *calculates the variance* |
+| `length()`  | *number of cases* |
+| `summary()`  | *a list of measures of central tendency* |
+
+<P>
+
+Because R is a statistical/data science programming language, these and many more functions are built in to base R.
+
+
+### Your Turn D.1: functions
+
+Write the script to calculate:
+
+* the minimum value of `bida_numbers`
+
+* how many numbers there are in `bida_numbers`
+
+
+```{r D1-3_yt, exercise=TRUE, exercise.eval=FALSE, exercise.setup = "D1-setup"}
+
+
+```
+
+
+
+```{r D1-3_yt-solution, exercise.setup = "D1-setup"}
+# answer
+
+min(bida_numbers)
+
+length(bida_numbers)
+
+```
+
+
+
+### Your Turn D.2: `summary()` 
+
+The `summary()` function is handy for getting a quick snapshot of a variable.
+
+
+Write the script to generate the summary of `bida_numbers`.
+
+
+
+```{r D2-1_yt, exercise=TRUE, exercise.eval=FALSE, exercise.setup = "D1-setup"}
+
+
+```
+
+
+
+```{r D2-1_yt-solution, exercise.setup = "D1-setup"}
+# answer
+
+summary(bida_numbers)
+
+```
+
+
+## E. Data frames
+
+So far we've only looked at objects that have one item in them. But most of your data analysis is going to use a data frame (also known as a data table) of some sort think of a typical spreadsheet of numbers, with the data in columns and rows.
+
+We will delve into what makes a good data frame structure later in this course, but for now let's practice with some small examples so you can see what's happening. 
+
+In this example, we have a data frame called "anscombe_1" with 2 variables, and each variable has 11 cases in each. Let's take a quick look so we get a sense of the structure:
+
+
+
+```{r E1}
+
+anscombe_1 <- anscombe %>% 
+  select(x1, y1)
+
+```
+
+
+
+```{r E1-1, exercise=TRUE, exercise.setup = "E1"}
+
+anscombe_1
+
+```
+
+
+We can calculate the mean value of `x1` using the following code. The elements in the code are:
+
+`function(dataframe$variable)`
+
+Note that the dollar sign separates the data frame name from the variable in that data frame. (Later in the course we will see other ways to write the same code.)
+
+
+```{r E1-2, exercise=TRUE, exercise.setup = "E1"}
+
+mean(anscombe_1$x1)
+
+
+```
+
+
+### Your Turn E.1: functions on data frames
+
+Using the `anscombe_1` data frame, write the script to calculate:
+
+* the minimum value of `x1`
+
+* the median value of `y1`
+
+
+```{r E1-3_yt, exercise=TRUE, exercise.eval=FALSE, exercise.setup = "E1"}
+
+
+```
+
+
+
+```{r E1-3_yt-solution, exercise.setup = "E1"}
+# answer
+
+min(anscombe_1$x1)
+
+# answer: 4
+
+median(anscombe_1$y1)
+
+# answer: 7.58
+
+
+```
+
+
+
+### Some two-variable statistical functions
+
+Earlier we saw functions that calculate summary statistics on a single variable, such as `mean()` and `sd()`. R also gives us functions to calculate the statistics on two variables, such as the correlation and the covariance.
+
+
+**Two-variable statistical functions**
+
+| Function | Description |
+| :--- | :--- |
+| `cor(x, y)`  | *calculate the correlation between x and y* |
+| `cov(x, y)`  | *calculate the covariance between x and y* |
+
+<P>
+
+And again, the statistical/data science foundation of R means that these and many more functions are built in to base R.
+
+
+### Your Turn E.2: functions on two variables
+
+Using the `anscombe_1` data frame, write the script to calculate:
+
+* the correlation between `x1` and `y1`
+
+
+```{r E2-1_yt, exercise=TRUE, exercise.eval=FALSE, exercise.setup = "E1"}
+
+
+```
+
+
+
+```{r E2-1_yt-solution, exercise.setup = "E1"}
+# answer
+
+cor(anscombe_1$x1, anscombe_1$y1)
+
+# answer: 0.8164205
+
+```
+
