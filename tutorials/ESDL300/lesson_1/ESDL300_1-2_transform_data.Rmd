@@ -82,8 +82,8 @@ Boolean operators can be combined with *and* or *or*.
 
 | Operator | Description |
 | :--- | :--- |
-| `&`     | *and, returns true if preceding and following are both true, else false* |
-| &#124;  | *or, returns true if either preceding and following are true, else false* |
+| `&`     | *and, returns true if preceding and following are _both_ true, else false* |
+| &#124;  | *or, returns true if _either_ preceding and following are true, else false* |
 
 
 * see [_R for Data Science_, "Comparisions""](https://r4ds.had.co.nz/transform.html#comparisons) and ["Logical Operators"](https://r4ds.had.co.nz/transform.html#logical-operators).]
@@ -93,7 +93,17 @@ Boolean operators can be combined with *and* or *or*.
 
 ### gapminder data
 
-We will be using the data in the {gapminder} package. Take a quick look at the data:
+We will be using the data in the {gapminder} package. This data frame has the following variables for each of 142 countries:
+
+* life expectancy, 
+
+* GDP per capita, and 
+
+* population, 
+
+every five years, from 1952 to 2007, as well as the continent for each country.
+
+Take a quick look at the data:
 
 
 ```{r gapminder_data_view, exercise=TRUE}
@@ -113,7 +123,7 @@ The general structure of a `filter()` function is:
 `filter(.data, variable <test> value)`
 
 
-See if you can use the logical operators to manipulate our code below to show:
+See if you can use the logical operators to edit the code below to show:
 
 * the data for Canada
 
@@ -220,6 +230,10 @@ gapminder %>%
                                                     # What happens if you replace the comma after 2007 with `&`?
                                                     # - Why do you think this might be happening?
 
+# alternate answer
+gapminder %>%
+  filter(year == 2007) %>% 
+  filter(lifeExp < 50 | lifeExp > 75)  # This solution treats each part of the "test" separately
 
 
 ```
@@ -244,7 +258,7 @@ gapminder %>%
 
 ```
 
-Instead of this rather verbose syntax, we can achieve the same result by creating a list. 
+Instead of this rather verbose syntax, we can achieve the same result by creating a list and using the `%in%` operator to test within the list. 
 
 
 ```{r filter6b_example, exercise=TRUE, exercise.eval=FALSE}
@@ -272,7 +286,7 @@ gapminder %>%
 
 
 
-* Create a list object and return records for any of "Belgium", "India", "Denmark" or "Angola" 
+* Create a list object and return records for any of "Egypt", "Spain", "Denmark", "Lebanon" 
 
 
 ```{r filter6_example, exercise=TRUE, exercise.eval=FALSE}
@@ -283,10 +297,10 @@ gapminder %>%
 ```{r filter6_example-solution}
 # answer
 gapminder %>%
-  filter(country %in% c("Belgium", "India", "Denmark", "Angola"))
+  filter(country %in% c("Egypt", "Spain", "Denmark", "Lebanon"))
   
 # alternate answer
-country_list <- c("Belgium", "India", "Denmark", "Angola")   # create object that is list of countries
+country_list <- c("Egypt", "Spain", "Denmark", "Lebanon")   # create object that is list of countries
 
 gapminder %>%
   filter(country %in% country_list)                           # filter uses that object 
@@ -316,7 +330,7 @@ gapminder %>%
 
 ## Your Turn 1.3: sorting with `arrange()`
 
-Sort the records so that the country / year combinatino with the smallest population are first.
+Sort the records so that the country / year combination with the smallest population are first.
 
 ```{r arrange1_example, exercise=TRUE, exercise.eval=FALSE}
 
@@ -377,65 +391,6 @@ gapminder %>%
 ```
 
 
-## EXERCISE: {dplyr} functions
-
-Use the {dplyr} functions to create a summary table with the population and GDP by continent for the year 1952  
-
-
-```{r dplyr1_exercise, exercise=TRUE, exercise.eval=FALSE}
-
-```
-
-
-```{r dplyr1_exercise-solution}
-
-# answer
-gapminder %>%
-  filter(year == 1952) %>%               # filter to get the records we need
-  mutate(totalGDP = pop * gdpPercap) %>% # note that we need to add the new variable calculated above!
-  group_by(continent) %>%                # this defines the grouping category
-  summarize(pop = sum(pop),              # 
-            totalGDP = sum(totalGDP))    #
-```
-
-
-
-
-## Your Turn 1.5
-
-Alter the code to add a `prev_lifeExp` column that contains the life expectancy from the previous record.
-
-(Hint: refer to the ["Data Transformation"](https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf) cheatsheet; you want to offset elements by one)
-
-
-```{r dplyr2_exercise, exercise=TRUE, exercise.eval=FALSE}
-
-```
-
-
-```{r dplyr2_exercise-solution}
-
-# answer
-gapminder %>%
-  mutate(prev_lifeExp = lag(lifeExp))
-
-# challenge hint: 
-# - note that there is an `NA` in the first row, since there's no prior row to pull from
-```
-
-
-
-```{r quiz1_5}
-quiz(
-  question("Why isn't this quite the 'life expectency five years ago'?",
-    answer("The `lag()` function doesn't know when the country changes so is pulling the last record for the previous country", correct = TRUE),
-    answer("The `lag() function is only 1 step, not 5, so it's only one year apart"),
-    answer("The data are every 4 years apart"),
-    answer("The question is a trick--the value _is_ 'life expectency five years ago'")
-  )
-)
-```
-
 
 ## Take aways
 
@@ -448,13 +403,9 @@ quiz(
 
 
 
-## Transform data 1b: select()
-
-<!-- This file by Martin Monkman is licensed under a Creative Commons Attribution 4.0 International License -->
 
 
-
-## Your Turn 1.6
+## Your Turn 1.5: select() for variables
 
 {gapminder} again
 
@@ -517,368 +468,6 @@ gapminder %>%
 
 
 
-
-## Transform Data 2: summarize
-
-<!-- This file by Charlotte Wickham (with some modifications by Martin Monkman) is licensed under a Creative Commons Attribution 4.0 International License, adapted from the orignal work at https://github.com/rstudio/master-the-tidyverse by RStudio. -->
-
-When working with data, one of the first things in our analysis is often the calculation of summary statistics. We may want the number of cases, or the maximum value, or the mean of all the records. 
-
-Here's a list of the {dplyr} functions that you'll be using:
-
-
-
-|function |action |
-| :--- | :--- |
-| `group_by()`  | *declare subsets in data*|
-| `summarize()` | *summarize the data, by groups if they have been declared*|
-| `tally()`     | *counting (by groups if group_by() applied)*|
-
-
-**gapminder**
-
-Take a quick look at the data in the {gapminder} package.
-
-```{r yourturn2_0, exercise=TRUE, exercise.eval=FALSE}
-gapminder
-```
-
-
-
-## Your Turn 2.1
-
-Use `summarise()` to compute three statistics about the data:
-
-* The first (minimum) year in the dataset
-* The last (maximum) year in the dataset
-* The number of unique countries
-
-```{r yourturn2_1, exercise=TRUE, exercise.eval=FALSE}
-
-```
-
-
-```{r yourturn2_1-solution}
-# answer
-gapminder %>%
-  summarize(year_min = min(year),
-            year_max = max(year),
-            n_countries = n_distinct(country))
-
-```
-
-## Your Turn 2.2
-
-Extract the rows for African countries in 2007.
-
-Then find:
-
-1. The number of unique countries
-2. The median life expectancy of African countries as a group
-
-```{r yourturn2_2, exercise=TRUE, exercise.eval=FALSE}
-
-```
-
-
-```{r yourturn2_2-solution}
-# answer
-gapminder %>% 
-  filter(continent == "Africa", year == 2007) %>% 
-  summarise(n_countries = n_distinct(country),
-    med_life_exp = median(lifeExp))
-
-
-```
-
-
-## Your Turn 2.3
-
-Find the median life expectancy by continent in 2007.
-
-```{r yourturn2_3, exercise=TRUE, exercise.eval=FALSE}
-
-```
-
-
-```{r yourturn2_3-solution}
-gapminder %>%
-  filter(year == 2007) %>%
-  group_by(continent) %>% 
-  summarise(med_life_exp = median(lifeExp)) 
-
-```
-
-
-## Your Turn 2.4
-
-Find the median life expectancy by continent for each year in the dataframe.
-
-```{r yourturn2_4, exercise=TRUE, exercise.eval=FALSE}
-
-```
-
-
-```{r yourturn2_4-solution}
-
-gapminder %>%
-  group_by(continent, year) %>%
-  summarize(median_lifeExp = median(lifeExp))
-
-```
-
-
-## Your Turn 2.5
-
-
-Find the country with biggest jump in life expectancy (between any two consecutive records) for each continent.
-
-```{r yourturn2_5, exercise=TRUE, exercise.eval=FALSE}
-
-```
-
-
-```{r yourturn2_5-solution}
-# One of many solutions
-gapminder %>%
-  group_by(country) %>%
-  mutate(prev_lifeExp = lag(lifeExp),
-         jump = lifeExp - prev_lifeExp) %>%
-  arrange(desc(jump))
-
-
-```
-
-
-## Take aways
-
-* Make tables of summaries with `summarise()`  
-* Do groupwise operations with `group_by()`
-
-***
-
-
-
-## Transform Data 3: pivot
-
-<!-- This file by Martin Monkman is licensed under a Creative Commons Attribution 4.0 International License -->
-
-Pivoting the data in your file can be very helpful in your analysis. It's particularly helpful when your data is not "tidy". For example, there might be 
-
-* One variable spread across multiple columns
-
-* One observation scattered across multiple rows.
-
-You might also want to pivot the data to make it more human readable (a more compact layout that's easily scanned) or machine readable.
-
-See [_R for Data Science_, Tidy data: Pivoting](https://r4ds.had.co.nz/tidy-data.html#pivoting)
-
-
-The functions to pivot your data table are in the package {tidyr}.
-
-
-|function |action |
-| :--- | :--- |
-| **{tidyr}  | - |
-| `pivot_wider()` | Pivot data from long to wide |
-| `pivot_longer()` | Pivot data from wide to long |
-
-
-
-## Your Turn 3.1
-
-A pivot table crosstab using the {mpg} data package of automobile fuel economy.
-
-First, a look at the source table.
-
-```{r yourturn3_0, exercise=TRUE, exercise.eval=FALSE}
-
-mpg
-```
-
-Using `group_by` and `summarise` to create a summary table of the average engine displacement by vehicle class:
-
-```{r yourturn3_1_1, exercise=TRUE, exercise.eval=FALSE}
-
-mpg %>%                                
-  group_by(class) %>%                   
-  summarise(displ_mean = mean(displ)) 
-
-```
-
-Now do the same with vehicle class and number of cylinders:
-
-```{r yourturn3_1_2, exercise=TRUE, exercise.eval=FALSE}
-
-```
-
-
-```{r yourturn3_1_2-solution}
-# answer
-class_by_cyl <- mpg %>%                 # note that an object `class_by_cyl` is created
-  group_by(class, cyl) %>%
-  summarise(displ_mean = mean(displ)) 
-
-class_by_cyl                            # in order to print the object, just name it
-
-
-```
-
-
-What happens if you reverse the order of the grouping variables?
-
-```{r yourturn3_1_3, exercise=TRUE, exercise.eval=FALSE}
-
-```
-
-
-```{r yourturn3_1_3-solution}
-# answer
-class_by_cyl <- mpg %>%                 # note that an object `class_by_cyl` is created
-  group_by(cyl, class) %>%
-  summarise(displ_mean = mean(displ)) 
-
-class_by_cyl                            # in order to print the object, just name it
-
-```
-
-
-Create a pivot (crosstab) table with class by number of cylinders:
-
-```{r, include=FALSE}
-#load class_by_cyl table (since the output of one chunk doesn't carry forward)
-
-#saveRDS(class_by_cyl, file = "tutorials/BIDA302_solutions/data/class_by_cyl.rds")
-class_by_cyl <- readRDS(file = "data/class_by_cyl.rds")
-
-
-```
-
-
-```{r yourturn3_1_4, exercise=TRUE, exercise.eval=FALSE}
-
-```
-
-
-```{r yourturn3_1_4-solution}
-# answer
-# pivot table (wide)
-
-class_by_cyl_pivot <- class_by_cyl %>%
-  pivot_wider(names_from = cyl, values_from = displ_mean)
-
-class_by_cyl_pivot
-
-
-```
-
-Now, unpivot it back to the original structure:
-
-```{r, include=FALSE}
-#saveRDS(class_by_cyl_pivot, file = "tutorials/BIDA302_solutions/data/class_by_cyl_pivot.rds")
-
-
-#load class_by_cyl_pivot table (since the output of one chunk doesn't carry forward)
-
-class_by_cyl_pivot <- readRDS(file = "data/class_by_cyl_pivot.rds")
-
-
-```
-
-
-```{r yourturn3_1_5, exercise=TRUE, exercise.eval=FALSE}
-
-```
-
-
-```{r yourturn3_1_5-solution}
-# and back to longer...
-
-displ_class_by_cyl <- class_by_cyl_pivot %>%
-  pivot_longer(-class, names_to = "cyl", values_to = "displ_mean")
-
-displ_class_by_cyl
-
-```
-
-
-
-
-```{r quiz3_1}
-quiz(
-  question("What do you notice about the structure of the unpivoted table?",
-    answer("It's exactly the same as it was before"),
-    answer("The variables (columns) are in different order"),
-    answer("There are now `NA` values", correct = TRUE),
-    answer("The values in the cells have changed")
-  )
-)
-```
-
-
-
-
-
-## Your Turn 3.2
-
-Making some summary tables with the {gapminder} data.
-
-Create a table where:
-
-* object name `lifeExp_by_continent` that has 
-* the median life expectency for each continent for every year in the dataframe, 
-* where the continent is the column and the year is the row.
-
-(This is a restructuring of the table from 2.4)
-
-```{r yourturn3_2_1, exercise=TRUE, exercise.eval=FALSE}
-
-```
-
-
-```{r yourturn3_2_1-solution}
-# answer
-
-lifeExp_by_continent <- gapminder %>%
-  group_by(continent, year) %>%
-  summarize(median_lifeExp = median(lifeExp)) %>%
-  pivot_wider(names_from = continent, values_from = median_lifeExp)
-
-lifeExp_by_continent
-
-```
-
-## Your Turn 3.3
-
-Create a table that shows:
-
-* GDP per capita for
-* the countries Canada, United States, and Mexico are the columns, and 
-* the years after 1980 are the rows
-
-```{r yourturn3_3_1, exercise=TRUE, exercise.eval=FALSE}
-
-```
-
-
-```{r yourturn3_3_1-solution}
-
-gapminder %>%
-  filter(year > 1980,
-         country %in% c("Canada", "United States", "Mexico")) %>%
-  select(country, year, gdpPercap) %>%        # select() is covered in section 4
-  pivot_wider(names_from = country, values_from = gdpPercap)
-
-```
-
-
-
-## Take aways
-
-* Restructure data tabulations with `pivot_wider()` and `pivot_longer`  
-
-
-
 ## Complete list of functions
 
 
@@ -891,17 +480,11 @@ Here's a list of the {dplyr} and {tidyr} functions that are used in this tutoria
 | `filter()`    | *keep rows*|
 | `select()`    | *keep variables (or drop them -var)*|
 | `mutate()`    | *create a new variable*|
-| `group_by()`  | *declare subsets in data*|
-| `summarize()` | *summarize the data, by groups if they have been declared*|
-| `rename()`    | *renaming variables*|
-| `tally()`     | *counting (by groups if group_by() applied)*|
 | `distinct()`  | *returns only rows that are unique*| 
 | `case_when()` | *is used for "recoding" variable, often used with mutate()*|
 | `arrange()`    | *sort from smallest to largest*|
 | `arrange(desc())`    | *sort from largest to smallest*|
-| **{tidyr}  | - |
-| `pivot_wider()` | |
-| `pivot_longer()` | |
+
 
 
 ## Reference

@@ -234,7 +234,7 @@ In R, character strings are created by putting letters, numbers, and other symbo
 `t <- "If it's inside quotation marks, it's a character"`
 
 
-Let's print the object `hello_world`:
+Let's create an object `hello_world`, and then print it. The code below creates the object—complete the chunk by adding the code necessary to print it.
 
 ```{r C1, exercise=TRUE, exercise.eval=FALSE}
 
@@ -242,6 +242,13 @@ hello_world <- "Hello, world"
 
 
 ```
+
+```{r C1-solution}
+hello_world <- "Hello, world"
+
+hello_world
+```
+
 
 Note that if we put a number inside quotation marks, it's now a character string—without quotation marks, it is a number. If we try to use a character string that looks like a number in a math equation, R throws an error:
 
@@ -265,28 +272,28 @@ In R, a function's syntax looks like this:
 
 `function_name(variable, perhaps_an_argument)`
 
-In R, one way to create one type of list (technically, an atomic vector) of numbers is using the `c()` function ("c" for "combine"). Here's the code to create a list of numbers:
+In R, one way to create one type of list (technically, an atomic vector) of numbers is using the `c()` function ("c" for "combine"). Here's the code to create a list of numbers (it happens to be the number of hits that Ichiro Suzuki got in each of the first five seasons he played for the Seattle Mariners):
 
 
 ```{r D1-setup}
 # setup chunk with bida_numbers
-bida_numbers <- c(301, 302, 404, 405, 406)
+ichiro_hits <- c(242, 208, 212, 262, 206)
 
 ```
 
 ```{r D1-1, exercise=TRUE}
 
-bida_numbers <- c(301, 302, 404, 405, 406)
+ichiro_hits <- c(242, 208, 212, 262, 206)
 
-bida_numbers
+ichiro_hits
 
 ```
 
-We can then apply a function to the object `bida_numbers`. For example, to calculate the mean, we use the function `mean()`:
+We can then apply a function to the object `ichiro_hits`. For example, to calculate the mean, we use the function `mean()`:
 
 ```{r D1-2, exercise=TRUE, exercise.eval=FALSE, exercise.setup = "D1-setup"}
 
-mean(bida_numbers)
+mean(ichiro_hits)
 
 ```
 
@@ -317,9 +324,9 @@ Because R is a statistical/data science programming language, these and many mor
 
 Write the script to calculate:
 
-* the minimum value of `bida_numbers`
+* the minimum value of `ichiro_hits`
 
-* how many numbers there are in `bida_numbers`
+* how many numbers there are in `ichiro_hits`
 
 
 ```{r D1-3_yt, exercise=TRUE, exercise.eval=FALSE, exercise.setup = "D1-setup"}
@@ -332,9 +339,9 @@ Write the script to calculate:
 ```{r D1-3_yt-solution, exercise.setup = "D1-setup"}
 # answer
 
-min(bida_numbers)
+min(ichiro_hits)
 
-length(bida_numbers)
+length(ichiro_hits)
 
 ```
 
@@ -345,7 +352,7 @@ length(bida_numbers)
 The `summary()` function is handy for getting a quick snapshot of a variable.
 
 
-Write the script to generate the summary of `bida_numbers`.
+Write the script to generate the summary of `ichiro_hits`.
 
 
 
@@ -359,7 +366,7 @@ Write the script to generate the summary of `bida_numbers`.
 ```{r D2-1_yt-solution, exercise.setup = "D1-setup"}
 # answer
 
-summary(bida_numbers)
+summary(ichiro_hits)
 
 ```
 
