@@ -349,7 +349,7 @@ length(ichiro_hits)
 
 ### Your Turn D.2: `summary()` 
 
-The `summary()` function is handy for getting a quick snapshot of a variable.
+The `summary()` function is handy for getting a quick statistical snapshot of a variable.
 
 
 Write the script to generate the summary of `ichiro_hits`.
@@ -367,120 +367,6 @@ Write the script to generate the summary of `ichiro_hits`.
 # answer
 
 summary(ichiro_hits)
-
-```
-
-
-## E. Data frames
-
-So far we've only looked at objects that have one item in them. But most of your data analysis is going to use a data frame (also known as a data table) of some sort think of a typical spreadsheet of numbers, with the data in columns and rows.
-
-We will delve into what makes a good data frame structure later in this course, but for now let's practice with some small examples so you can see what's happening. 
-
-In this example, we have a data frame called "anscombe_1" with 2 variables, and each variable has 11 cases in each. Let's take a quick look so we get a sense of the structure:
-
-
-
-```{r E1}
-
-anscombe_1 <- anscombe %>% 
-  select(x1, y1)
-
-```
-
-
-
-```{r E1-1, exercise=TRUE, exercise.setup = "E1"}
-
-anscombe_1
-
-```
-
-
-We can calculate the mean value of `x1` using the following code. The elements in the code are:
-
-`function(dataframe$variable)`
-
-Note that the dollar sign separates the data frame name from the variable in that data frame. (Later in the course we will see other ways to write the same code.)
-
-
-```{r E1-2, exercise=TRUE, exercise.setup = "E1"}
-
-mean(anscombe_1$x1)
-
-
-```
-
-
-### Your Turn E.1: functions on data frames
-
-Using the `anscombe_1` data frame, write the script to calculate:
-
-* the minimum value of `x1`
-
-* the median value of `y1`
-
-
-```{r E1-3_yt, exercise=TRUE, exercise.eval=FALSE, exercise.setup = "E1"}
-
-
-```
-
-
-
-```{r E1-3_yt-solution, exercise.setup = "E1"}
-# answer
-
-min(anscombe_1$x1)
-
-# answer: 4
-
-median(anscombe_1$y1)
-
-# answer: 7.58
-
-
-```
-
-
-
-### Some two-variable statistical functions
-
-Earlier we saw functions that calculate summary statistics on a single variable, such as `mean()` and `sd()`. R also gives us functions to calculate the statistics on two variables, such as the correlation and the covariance.
-
-
-**Two-variable statistical functions**
-
-| Function | Description |
-| :--- | :--- |
-| `cor(x, y)`  | *calculate the correlation between x and y* |
-| `cov(x, y)`  | *calculate the covariance between x and y* |
-
-<P>
-
-And again, the statistical/data science foundation of R means that these and many more functions are built in to base R.
-
-
-### Your Turn E.2: functions on two variables
-
-Using the `anscombe_1` data frame, write the script to calculate:
-
-* the correlation between `x1` and `y1`
-
-
-```{r E2-1_yt, exercise=TRUE, exercise.eval=FALSE, exercise.setup = "E1"}
-
-
-```
-
-
-
-```{r E2-1_yt-solution, exercise.setup = "E1"}
-# answer
-
-cor(anscombe_1$x1, anscombe_1$y1)
-
-# answer: 0.8164205
 
 ```
 

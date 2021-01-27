@@ -23,13 +23,42 @@ library(gapminder)
 
 ```
 
+
+## Data frames
+
+So far we've only looked at objects that have one item in them. But most of your data analysis is going to use a data frame (also known as a data table) of some sort. Think of a typical spreadsheet of numbers, with the data in columns and rows.
+
+We will delve into what makes a good data frame structure later in this course, but for now let's practice with some small examples so you can see what's happening in R. 
+
+
+We will be using the data in the {gapminder} package. This data frame has the following variables for each of 142 countries:
+
+* life expectancy, 
+
+* GDP per capita, and 
+
+* population, 
+
+every five years, from 1952 to 2007, as well as the continent for each country.
+
+Take a quick look at the data:
+
+
+```{r gapminder_data_view, exercise=TRUE}
+
+gapminder
+
+```
+
+
+
 ## Transform Data 1a: manipulate cases
 
 > Please refer to [_R for Data Science_, Data transformation](https://r4ds.had.co.nz/transform.html) for more information about this section.
 
 When working with data, particularly large data sets, you encounter a situation where you need to: 
 
-* subset the data so that it contains only those _records_ (rows) you are interested in (Why deal with a data table that has every province in Canada when you just need the British Columbia data?)
+* subset the data so that it contains only those _records_ (rows) you are interested in (Why deal with a data table that has every country when you just need the Canada data?)
 
 * subset the data so that it contains only those _variables_ (columns) you are interested in (Why keep looking at variables that do not factor into your analysis, or you will not print in your report?)
 
@@ -91,28 +120,6 @@ Boolean operators can be combined with *and* or *or*.
 
 
 
-### gapminder data
-
-We will be using the data in the {gapminder} package. This data frame has the following variables for each of 142 countries:
-
-* life expectancy, 
-
-* GDP per capita, and 
-
-* population, 
-
-every five years, from 1952 to 2007, as well as the continent for each country.
-
-Take a quick look at the data:
-
-
-```{r gapminder_data_view, exercise=TRUE}
-
-gapminder
-
-```
-
-
 
 ## Your Turn 1.1: filter() rows
 
@@ -129,6 +136,7 @@ See if you can use the logical operators to edit the code below to show:
 
 ```{r filter1_example, exercise=TRUE, exercise.eval=FALSE}
 # example
+# remember, you need two equal signs for the test of equality!
 filter(gapminder, country == "New Zealand")
 
 ```
@@ -153,7 +161,10 @@ filter(gapminder, country == "New Zealand")
 ```{r filter2_example-solution}
 
 # answer
+# you have to change both the variable (continent) and the value ("Oceania")
 filter(gapminder, continent == "Oceania")
+
+
 ```
 
 
@@ -187,9 +198,9 @@ For example, we could write
 
 `data %>% function(arg)` 
 
-If we want to do anything with the first statement, we have to assign it to an intermediate object, and then use that object in the second statement. With the pipe, we can simply add another pipe and the results of the first function are passed to the second statement.
+If we want to do anything with the results of the first statement, we have to assign it to an intermediate object, and then use that object in the second statement. With the pipe, we can simply add another pipe and the results of the first function are passed to the second statement.
 
-As we get to increasingly complex statements, the power of this will become more evident.
+As we start to write increasingly complex statements, the power of this will become more evident.
 
 ***
 
@@ -373,7 +384,7 @@ gapminder %>% arrange(-gdpPercap)
 
 ## Your Turn 1.4: creating new variables
 
-Use the `mutate()` function to calculate a new variable with total GDP.
+Use the `mutate()` function to calculate a new variable with each country's total GDP. This is done by multiplying the GDP per capita by the population.
 
 
 ```{r mutate1_example, exercise=TRUE, exercise.eval=FALSE}
@@ -449,12 +460,13 @@ gapminder %>%
 
 
 
-You can also define a range of columns to select by using the `:`
+You can also define a range of columns to select by using the `:`. 
 
 ```{r yourturn4_1_3, exercise=TRUE, exercise.eval=FALSE}
 # answer
 gapminder %>%
-  select(country, year:pop)
+  select(country, year:pop) 
+# You can read this as "all of the variables between `year` and `pop`."
 ```
 
 
