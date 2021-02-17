@@ -4,12 +4,25 @@ output: learnr::tutorial
 runtime: shiny_prerendered
 ---
 
+
+<!-- This file by Martin Monkman is licensed under a Creative Commons Attribution 4.0 International License.
+
+It is based on the same data transformations as described in "Data Transformation" in _R for Data Science_ by Hadley Wickham & Garrett Grolemund, https://r4ds.had.co.nz/transform.html
+
+-->
+
+
+
 ```{r setup, include=FALSE}
 library(learnr)
 knitr::opts_chunk$set(echo = FALSE)
 
 library(reticulate)
-library(ggplot2)
+library(tidyverse)
+
+# set up dataframe for downstream access
+nycflights13 <- read_csv("flights.csv")
+flights <- reticulate::r_to_py(nycflights13)
 
 ```
 
@@ -53,8 +66,15 @@ It's possible to run Python code chunks inside your R Markdown document.
 
 In this chunk, we have Python code that loads the `pandas` module (for data wrangling) and changes the reference to `pd`.
 
+```
+# import the `pandas` module so that it's available for use
 
-```{python import_pandas, exercise=TRUE}
+import pandas as pd
+
+```
+
+
+```{python import_pandas}
 # import the `pandas` module so that it's available for use
 import pandas as pd
 
@@ -67,9 +87,7 @@ The code in this chunk
 * displays (prints) the first five rows, using the `head()` function
 
 
-```{python read_csv, exercise=TRUE, exercise.eval=FALSE}
-import pandas as pd
-
+```{python read_csv, exercise=TRUE, exercise.eval=FALSE, exercise.setup = "import_pandas"}
 
 # read the csv file "flights.csv" and assign it to the object "flights"
 flights = pd.read_csv("flights.csv")
