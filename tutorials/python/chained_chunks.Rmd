@@ -1,0 +1,45 @@
+---
+title: "Chained setup chunks"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include = FALSE}
+library(learnr)
+library(reticulate)
+```
+
+from 
+
+https://community.rstudio.com/t/learnr-with-python-and-chained-code-chunks/83372/2 
+
+
+
+```{r even_more_setup}
+d <- 3
+```
+
+# learnr + reticulate demo
+
+<!-- Create Python variable `a` which reads `d` from R: -->
+
+```{python setupA, exercise.setup = "even_more_setup"}
+a = r.d + 2 # 5
+```
+
+<!-- Read `a` from Python, and create `b`: -->
+
+```{r setupB, exercise.setup = "setupA"}
+b <- py$a + d # 8
+```
+
+R exercise that uses `b` (via R and python setup chunks):
+
+```{r ex1, exercise = TRUE, exercise.setup = "setupB"}
+b + 1 # 9
+```
+
+Python exercise using `b` (via R and python setup chunks):
+```{python ex2, exercise = TRUE, exercise.setup = "setupB"}
+r.b + 1 # 9
+```

@@ -1,0 +1,299 @@
+---
+title: "hands-on: python"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 1. Getting started
+
+![reticulate hex](reticulate-735.jpg)
+
+> 
+> The reticulate package provides a comprehensive set of tools for interoperability between Python and R. The package includes facilities for:
+> 
+> Calling Python from R in a variety of ways including R Markdown, sourcing Python scripts, importing Python modules, and using Python interactively within an R session.
+> 
+> Translation between R and Python objects (for example, between R and Pandas data frames, or between R matrices and NumPy arrays).
+> 
+> Flexible binding to different versions of Python including virtual environments and Conda environments.
+> 
+> Reticulate embeds a Python session within your R session, enabling seamless, high-performance interoperability. If you are an R developer that uses Python for some of your work or a member of data science team that uses both languages, reticulate can dramatically streamline your workflow!
+
+(from the [{reticulate} site](https://rstudio.github.io/reticulate/))
+
+
+Load reticulate:
+
+```{r libraries}
+library(reticulate)
+
+```
+
+
+The {reticulate} function `py_config()` can be used to see what version of Python is running, and other configuration details
+
+```{r}
+py_config()
+
+```
+
+
+## 2. Python!
+
+It's possible to run Python code chunks inside your R Markdown document. 
+
+In this chunk, we have Python code that 
+
+* first loads the `pandas` module (for data wrangling) and changes the reference to `pd`
+
+* reads the CSV file "flights.csv" (the `flights` table from {nycflights13})
+
+```{python}
+# import the `pandas` module so that it's available for use
+import pandas as pd
+
+# read the csv file "flights.csv" and assign it to the object "flights"
+flights = pd.read_csv("flights.csv")
+
+# print the head (first 5 rows)
+print(flights.head())
+
+```
+
+Notice a couple of things:
+
+* the read function adds an index column by default; if you have a table where you have an index variable, you can specify that in the `read_csv`
+
+* that index numbering starts at 0 ... watch for that if you start using row references 
+
+
+## 3. Filter and select
+
+It's a big table ... over 300,000 rows.
+
+
+So let's trim it down to a bite size chunk, and create a new Python data frame, `flights_SEA`:
+
+```{python}
+
+# filter so that flights contains just those that are going to the 
+# Seattle-Tacoma airport SEA
+flights_SEA = flights[flights['dest'] == "SEA"]
+
+# select the carrier, departure delay, and arrival delay columns
+flights_SEA = flights_SEA[['carrier', 'dep_delay', 'arr_delay']]
+
+# drop the NAs
+flights_SEA = flights_SEA.dropna()
+
+# print the remainer
+print(flights_SEA)
+
+```
+
+
+## 4. Detour: running a Python script inside your RStudio
+
+Run the same code inside an R chunk, by running a Python script ".py" file
+
+```{r}
+
+source_python("py_code.py")
+
+```
+
+
+
+
+
+
+
+## 5. Calculating summary statistics
+
+Count the number of flights by airline: uses `size()`
+
+```{python}
+flights_SEA.groupby("carrier").size()
+
+```
+* the "dtype" indicates the data type, and "int64" is a 64-bit integer
+
+
+Mean of departure delay, median of arrival delay.
+
+
+```{python}
+# calculate mean of both departure delay and arrival delay
+flights_SEA.mean()
+
+# mean of departure delay
+flights_SEA['dep_delay'].mean()
+
+# median of arrival delay
+flights_SEA['arr_delay'].median()
+
+```
+
+
+Another way to go about it would be to select the column as a new object, then calculate.
+
+```{python}
+
+departure_delay = flights_SEA['dep_delay']
+
+departure_delay.mean()
+
+```
+
+
+### 5a. summary stats table
+
+pandas also has a `describe` function that produces many summary stats:
+
+```{python}
+
+flights_SEA.describe()
+
+```
+
+
+## 6. Grouping
+
+It's possible to calculate summary statistics by a variable through the `groupby` function.
+
+Here we calculate the mean delays for each airline.
+
+```{python}
+
+flights_SEA.groupby("carrier").mean()
+
+```
+
+
+The same, but with median.
+
+
+```{python}
+
+flights_SEA.groupby("carrier").median()
+
+```
+
+
+## 7. Pivoting
+
+In pandas, the functions to pivot are:
+
+* longer is `melt`
+
+* wider is `pivot_table`
+
+
+### 7a. melt
+
+
+```{python}
+
+df_melted = pd.melt(flights_SEA, id_vars=["carrier"], value_vars=["dep_delay", "arr_delay"], value_name="delay.time")
+
+print(df_melted)
+
+```
+
+
+
+
+### 7b. pivot_table
+
+The `pivot_table` function gives another way to calculate grouped statistics. The `index` variable works in the same way as `groupby`.
+
+```{python}
+
+df_pivot = df_melted.pivot_table(index=["carrier"], columns =["variable"], values =["delay.time"])
+
+print(df_pivot)
+
+
+```
+
+
+Note that the default statistic here is the mean. We can also specify a different one using the `aggfunc` function:
+
+```{python}
+
+df_pivot = df_melted.pivot_table(index=["carrier"], values =["delay.time"], columns =["variable"], aggfunc='median')
+
+print(df_pivot)
+
+
+```
+
+Or we can get carried away and have multiple measures:
+
+```{python}
+
+df_pivot = df_melted.pivot_table(index=["carrier"], values =["delay.time"], columns =["variable"], aggfunc=['mean', 'median'])
+
+print(df_pivot)
+
+
+```
+
+
+* [Pandas Pivot Table Explained](https://pbpython.com/pandas-pivot-table-explained.html), Chris Moffitt
+
+* [3 Examples Using Pivot Table in Pandas](https://cmdlinetips.com/2018/12/pivot-table-in-python-pandas/) (uses the gapminder table as the example)
+
+
+## 8. Using Python objects in R
+
+Assign the python data frame "flights" to an R object
+
+```{r}
+
+flights_SEA <- py$flights_SEA
+flights_SEA
+```
+
+
+
+### 8a. Using a Python data frame in an R {ggplot2} 
+
+
+
+```{r}
+
+library(ggplot2)
+
+ggplot(py$flights_SEA, aes(carrier, arr_delay)) +
+  geom_point()
+
+```
+
+
+
+![reticulated Python](reticulated_python.png)
+
+---
+
+# resources
+
+## {reticulate} package
+
+[{reticulate}: R Interface to Python](https://rstudio.github.io/reticulate/)
+
+* [Calling Python from R](https://rstudio.github.io/reticulate/articles/calling_python.html)
+
+* [reticulate: running Python within RStudio](https://teachdatascience.com/reticulate/)
+
+
+## data science with Python: text books
+
+Wes McKinney, [_Python for Data Analysis_, 2nd ed.](https://wesmckinney.com/pages/book.html), 2017
+
+Jake VanderPlas, [_Python Data Science Handbook_](http://shop.oreilly.com/product/0636920034919.do), 2016
+
+
