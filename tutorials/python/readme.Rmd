@@ -1,0 +1,71 @@
+---
+title: "python in learnr: readme"
+output: html_notebook
+---
+
+Some notes to keep track of what I have done.
+
+## setting up the rstudio.cloud environment
+
+This builds on the base project for BIDA302.
+
+The installed R packages are:
+
+```{r tidyverse}
+# tidyverse
+install.packages("tidyverse")
+install.packages("readxl")
+
+# data
+install.packages("gapminder")
+install.packages("nycflights13")
+install.packages("palmerpenguins")
+
+```
+
+The project also contains the necessary elements to run Python and Pandas:
+
+```{r}
+install.packages("reticulate")
+
+reticulate::py_config()
+reticulate::py_install("pandas")
+
+```
+
+Similar to an R `library()` function call, you also need to "import pandas" in a python chunk
+
+```{python}
+# import the `pandas` module so that it's available for use
+import pandas as pd
+
+```
+
+That's it!
+
+
+## Reading a CSV into the {learnr} environment
+
+(notes in DM to @CMastication)
+
+>It seems that the bug I am running into is directly related to the reading of a csv file into the {learnr} environment ... it's happening in the R version of the same code. I won't have time to tackle any further changes until the evening (I have a full afternoon schedule with the day job!)
+Thanks again for asking the question and giving me motivation to get on with this!
+Update: I got it running locally (see updates on the github page), but it bonks out in http://rstudio.cloud (too much behind the scenes processing in running the R markdown to {learnr}?) and fails completely when I try to push it to http://shinyapps.io (my hypothesis is that publishing there doesn't bundle a python version, so fails)
+Turns out the big bug also applies to R {learnr} packages--any data import can't be from the same directory as the Rmd. That works great for a straight-up Rmd, but the html rendering seems to be looking in the wrong place. I solved this by parking the csv in the github repo, and then pointing there in the "setup" chunk
+Just realized I should copy this and write a blog post and/or RStudio Community entry!
+
+Next hypothesis: the source CSV is too big for rstudio.cloud. Let's try a sample!
+
+```{r}
+library(dplyr)
+
+set.seed(42)
+
+flights_10pct <- nycflights13::flights %>% 
+  sample_frac(0.1)
+
+readr::write_csv(flights_10pct, "flights_10pct.csv")
+
+```
+
+

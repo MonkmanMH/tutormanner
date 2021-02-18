@@ -22,10 +22,10 @@ library(reticulate)
 library(tidyverse)
 
 # set up dataframe for downstream access
-csv_url = "https://raw.githubusercontent.com/MonkmanMH/tutormanner/main/tutorials/python/flights.csv"
-
-nycflights13 <- read_csv(csv_url)
-flights <- reticulate::r_to_py(nycflights13)
+#csv_url = "https://raw.githubusercontent.com/MonkmanMH/tutormanner/main/tutorials/python/flights_10pct.csv"
+#
+#nycflights13 <- read_csv(csv_url)
+#flights <- reticulate::r_to_py(nycflights13)
 
 ```
 
@@ -86,19 +86,17 @@ import pandas as pd
 
 The code in this chunk 
 
-* reads the CSV file "flights.csv" (the `flights` table from {nycflights13})
+* reads the CSV file "flights_10pct.csv" (a 10% sample of the `flights` table from {nycflights13})
 
 * displays (prints) the first five rows, using the `head()` function
 
 
 
 
-```{python read_csv_flights}
+```{python read_flights}
 
-# read the csv file "flights.csv" and assign it to the object "flights"
-
-csv_url = "https://raw.githubusercontent.com/MonkmanMH/tutormanner/main/tutorials/python/flights.csv"
-
+# read the csv file "flights_10pct.csv" and assign it to the object "flights"
+csv_url = "https://raw.githubusercontent.com/MonkmanMH/tutormanner/main/tutorials/python/flights_10pct.csv"
 flights = pd.read_csv(csv_url)
 
 
@@ -107,11 +105,11 @@ flights = pd.read_csv(csv_url)
 
 The code to read a csv file is as follows:
 
-`flights = pd.read_csv("flights.csv")`
+`flights = pd.read_csv("flights_10pct.csv")`
 
 
 
-```{python read_csv, exercise=TRUE, exercise.eval=FALSE, exercise.setup = "read_csv_flights"}
+```{python read_csv, exercise=TRUE, exercise.eval=FALSE, exercise.setup="read_flights"}
 
 # print the head (first 5 rows)
 print(flights.head())
@@ -250,7 +248,7 @@ departure_delay.mean()
 
 pandas also has a `describe` function that produces many summary stats:
 
-```{python describe, exercise=TRUE}
+```{python describe_2, exercise=TRUE}
 
 flights_SEA.describe()
 
