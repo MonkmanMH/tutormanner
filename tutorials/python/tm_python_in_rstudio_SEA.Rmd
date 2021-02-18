@@ -14,14 +14,17 @@ It is based on the same data transformations as described in "Data Transformatio
 
 
 ```{r setup, include=FALSE}
-library(learnr)
 knitr::opts_chunk$set(echo = FALSE)
+
+library(learnr)
 
 library(reticulate)
 library(tidyverse)
 
 # set up dataframe for downstream access
-nycflights13 <- read_csv("flights.csv")
+csv_url = "https://raw.githubusercontent.com/MonkmanMH/tutormanner/main/tutorials/python/flights.csv"
+
+nycflights13 <- read_csv(csv_url)
 flights <- reticulate::r_to_py(nycflights13)
 
 ```
@@ -67,6 +70,7 @@ It's possible to run Python code chunks inside your R Markdown document.
 In this chunk, we have Python code that loads the `pandas` module (for data wrangling) and changes the reference to `pd`.
 
 ```
+# inside a python chunk:
 # import the `pandas` module so that it's available for use
 
 import pandas as pd
@@ -87,10 +91,28 @@ The code in this chunk
 * displays (prints) the first five rows, using the `head()` function
 
 
-```{python read_csv, exercise=TRUE, exercise.eval=FALSE, exercise.setup = "import_pandas"}
+
+
+```{python read_csv_flights}
 
 # read the csv file "flights.csv" and assign it to the object "flights"
-flights = pd.read_csv("flights.csv")
+
+csv_url = "https://raw.githubusercontent.com/MonkmanMH/tutormanner/main/tutorials/python/flights.csv"
+
+flights = pd.read_csv(csv_url)
+
+flights.describe
+
+```
+
+
+The code to read a csv file is as follows:
+
+`flights = pd.read_csv("flights.csv")`
+
+
+
+```{python read_csv, exercise=TRUE, exercise.eval=FALSE, exercise.setup = "read_csv_flights"}
 
 # print the head (first 5 rows)
 print(flights.head())
@@ -325,11 +347,10 @@ ggplot(py$flights_SEA, aes(carrier, arr_delay)) +
 
 ![reticulated Python](reticulated_python.png)
 
----
 
-# resources
+## resources
 
-## {reticulate} package
+### {reticulate} package
 
 [{reticulate}: R Interface to Python](https://rstudio.github.io/reticulate/)
 
@@ -338,7 +359,7 @@ ggplot(py$flights_SEA, aes(carrier, arr_delay)) +
 * [reticulate: running Python within RStudio](https://teachdatascience.com/reticulate/)
 
 
-## data science with Python: text books
+### data science with Python: text books
 
 Wes McKinney, [_Python for Data Analysis_, 2nd ed.](https://wesmckinney.com/pages/book.html), 2017
 
