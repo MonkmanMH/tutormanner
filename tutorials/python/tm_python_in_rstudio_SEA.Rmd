@@ -101,7 +101,6 @@ csv_url = "https://raw.githubusercontent.com/MonkmanMH/tutormanner/main/tutorial
 
 flights = pd.read_csv(csv_url)
 
-flights.describe
 
 ```
 
@@ -124,6 +123,22 @@ Notice a couple of things:
 * the read function adds an index column by default; if you have a table where you have an index variable, you can specify that in the `read_csv`
 
 * that index numbering starts at 0 ... watch for that if you start using row references 
+
+
+Another approach to viewing the dataframe is with the `.describe` function. The syntax for this is `name_of_dataframe.describe`.  In the code chunk below, use this function to view the "flights" dataframe.
+
+```{python describe, exercise=TRUE}
+
+
+```
+
+
+
+```{python describe-solution}
+
+flights.describe
+
+```
 
 
 ## 3. Filter and select
@@ -178,6 +193,8 @@ flights_SEA.groupby("carrier").size()
 * the "dtype" indicates the data type, and "int64" is a 64-bit integer
 
 
+For summary statistics, we apply the calculation function after specifying the variable we want. The syntax is `df['variable'].function()`
+
 This code will calculate the mean of departure delay.
 
 ```{python summary_stats_1, exercise=TRUE}
@@ -190,15 +207,27 @@ flights_SEA['dep_delay'].mean()
 What happens if we omit the `['dep_delay']` variable specification?
 
 ```{python summary_stats_2, exercise=TRUE}
+
+
+```
+
+```{python summary_stats_2-solution}
 # calculate mean of both departure delay and arrival delay
 flights_SEA.mean()
 
 ```
 
 
-How would you calculate the median of arrival delays?
+
+How would you calculate the _median_ of _arrival_ delays?
 
 ```{python summary_stats_3, exercise=TRUE}
+
+
+```
+
+
+```{python summary_stats_3-solution}
 
 # median of arrival delay
 flights_SEA['arr_delay'].median()
